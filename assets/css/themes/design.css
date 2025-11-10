@@ -1,0 +1,22 @@
+[data-theme="design"] {
+    --color-surface-primary: #EBF4F8;
+    --color-surface-primary-variant: #F7FBFD;
+    --color-surface-secondary: #FAFCFE;
+    --color-text-primary: #00253E;
+    --color-text-secondary: #005085;
+    --color-interactive-cta: #0077BE;
+    --color-interactive-cta-hover: #1085cf;
+    --color-interactive-cta-text: #FFFFFF;
+    --color-interactive-active: #CDE0E8;
+    --color-interactive-hover: #DCEAF0;
+    --color-border: #BEE0F0;
+    --shadow-level1: 4px 0 16px -4px rgba(0, 119, 190, 0.1);
+    --shadow-level2: 0 4px 6px -1px rgba(0, 119, 190, 0.2);
+}
+
+/* Design theme specific error message styling */
+[data-theme="design"] .error-message-external {
+    background-color: rgba(255, 87, 34, 0.08);
+    color: #D84315;
+    border: 1px solid rgba(255, 87, 34, 0.2);
+}

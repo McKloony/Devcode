@@ -1,0 +1,301 @@
+.toolbar {
+    height: 48px;
+    background-color: var(--color-surface-primary-variant);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: var(--shadow-level1);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 16px;
+    position: fixed;
+    top: 56px;
+    left: 0;
+    right: 0;
+    z-index: 90;
+    transition: margin-left 230ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.toolbar.with-sidenav {
+    margin-left: 230px;
+}
+
+.toolbar.with-sidenav.sidenav-collapsed {
+    margin-left: 64px;
+}
+
+@media (max-width: 1023px) {
+    .toolbar {
+        display: none !important; /* Desktop-Toolbar wird durch mobile-toolbar ersetzt */
+    }
+
+    .toolbar.with-sidenav {
+        display: none !important;
+        margin-left: 0 !important;
+    }
+
+    .toolbar.with-sidenav.sidenav-collapsed {
+        display: none !important;
+        margin-left: 0 !important;
+    }
+}
+
+
+
+.toolbar-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.btn-cta {
+    height: 40px;
+    padding: 0 20px;
+    background-color: var(--color-interactive-cta);
+    color: var(--color-interactive-cta-text);
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    transition: background-color 200ms ease, filter 200ms ease;
+}
+
+@media (max-width: 1023px) {
+    .btn-cta {
+        display: none !important; /* Button wird in mobiler Ansicht nicht angezeigt */
+    }
+}
+
+.btn-cta:hover {
+    background-color: var(--color-interactive-cta-hover);
+}
+
+.btn-cta:active {
+    background-color: var(--color-interactive-cta);
+    filter: brightness(1.1);
+}
+
+@media (max-width: 1023px) {
+    .btn-cta:active {
+        background-color: var(--color-interactive-cta-hover);
+        filter: brightness(1.1);
+        box-shadow: 0 1px 4px rgba(15, 98, 254, 0.15);
+    }
+}
+
+.btn-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.toolbar-icon-button {
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: none;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 200ms ease;
+}
+
+.toolbar-icon-button:hover {
+    background-color: var(--color-interactive-hover);
+}
+
+.toolbar-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--color-text-primary);
+}
+
+/* Mobile Toolbar mit Suchfeld */
+.mobile-toolbar {
+    display: none;
+}
+
+@media (max-width: 1023px) {
+    .mobile-toolbar {
+        display: flex !important;
+        position: fixed;
+        top: 56px;
+        left: 0;
+        right: 0;
+        height: 56px;
+        padding: 8px 16px;
+        background-color: var(--color-surface-primary-variant);
+        border-bottom: 1px solid var(--color-border);
+        box-shadow: var(--shadow-level1);
+        z-index: 89;
+        align-items: center;
+    }
+
+    .mobile-toolbar-search {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        background-color: var(--color-surface-secondary);
+        border: 1px solid var(--color-border);
+        border-radius: 4px;
+        padding: 0 12px;
+        height: 40px;
+        transition: border-color 200ms ease, background-color 200ms ease, box-shadow 200ms ease;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .mobile-toolbar-search:focus-within {
+        border-color: var(--color-interactive-cta);
+        background-color: var(--color-surface-secondary);
+        box-shadow: 0 0 0 1px var(--color-interactive-cta);
+    }
+
+    .mobile-toolbar-search-icon {
+        width: 20px;
+        height: 20px;
+        color: var(--color-text-secondary);
+        margin-right: 12px;
+        flex-shrink: 0;
+        pointer-events: none;
+        transition: color 200ms ease;
+    }
+
+    .mobile-toolbar-search:focus-within .mobile-toolbar-search-icon {
+        color: var(--color-interactive-cta);
+    }
+
+    .mobile-toolbar-search-input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        color: var(--color-text-primary);
+        font-size: 14px;
+        outline: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    .mobile-toolbar-search-input:focus {
+        outline: none;
+    }
+
+    .mobile-toolbar-search-input::placeholder {
+        color: var(--color-text-secondary);
+    }
+
+    /* Entfernt den blauen Fokus-Rahmen in Webkit-Browsern */
+    .mobile-toolbar-search-input:focus-visible {
+        outline: none;
+    }
+
+    /* Verhindert Autofill-Hintergrund */
+    .mobile-toolbar-search-input:-webkit-autofill,
+    .mobile-toolbar-search-input:-webkit-autofill:hover,
+    .mobile-toolbar-search-input:-webkit-autofill:focus {
+        -webkit-box-shadow: 0 0 0px 1000px var(--color-surface-secondary) inset;
+        -webkit-text-fill-color: var(--color-text-primary);
+        transition: background-color 5000s ease-in-out 0s;
+    }
+
+    .mobile-search-clear-button {
+        width: 28px;
+        height: 28px;
+        margin-left: 8px;
+        border: none;
+        border-radius: 50%;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: var(--color-text-secondary);
+        cursor: pointer;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 150ms ease, color 150ms ease, background-color 150ms ease;
+    }
+
+    .mobile-search-clear-button .iconify {
+        width: 16px;
+        height: 16px;
+    }
+
+    .mobile-search-clear-button.is-visible {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .mobile-search-clear-button:hover,
+    .mobile-search-clear-button:focus-visible {
+        color: var(--color-text-primary);
+        background-color: rgba(var(--color-border-rgb, 224, 224, 224), 0.4);
+        outline: none;
+    }
+
+    .mobile-search-clear-button:focus-visible {
+        box-shadow: 0 0 0 2px rgba(var(--color-border-rgb, 224, 224, 224), 0.6);
+    }
+}
+
+/* Floating Action Button */
+.fab {
+    display: none;
+}
+
+@media (max-width: 1023px) {
+    .fab {
+        display: flex;
+        position: fixed;
+        bottom: 100px;
+        right: 16px;
+        width: 56px;
+        height: 56px;
+        background-color: var(--color-interactive-cta);
+        color: var(--color-interactive-cta-text);
+        border-radius: 28px;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(15, 98, 254, 0.35);
+        z-index: 95;
+        cursor: pointer;
+        transition: transform 200ms ease, box-shadow 200ms ease, filter 200ms ease;
+        border: none;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+
+    .fab:active {
+        filter: brightness(1.1);
+        box-shadow: 0 2px 8px rgba(15, 98, 254, 0.25);
+    }
+
+    .fab-icon {
+        width: 24px;
+        height: 24px;
+        color: var(--color-interactive-cta-text);
+    }
+
+    .fab-text {
+        display: none;
+    }
+
+    /* Erweiterbarer FAB bei Bedarf */
+    .fab.extended {
+        width: auto;
+        padding: 0 20px;
+        min-width: 56px;
+    }
+
+    .fab.extended .fab-text {
+        display: inline;
+        margin-left: 8px;
+        font-size: 15px;
+        font-weight: 600;
+    }
+}

@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm:*)",
+      "Bash(curl:*)",
+      "Bash(chmod:*)",
+      "Bash(tree:*)",
+      "Bash(test:*)",
+      "Bash(wc:*)",
+      "Bash(for:*)",
+      "Bash(python3:*)",
+      "Bash(done)",
+      "Bash(node:*)",
+      "Bash(find:*)",
+      "Bash(cut:*)",
+      "Bash(awk:*)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(npm update:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npm install:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

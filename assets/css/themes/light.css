@@ -1,0 +1,22 @@
+[data-theme="light"] {
+    --color-surface-primary: #FAFAFA;
+    --color-surface-primary-variant: #FCFCFC;
+    --color-surface-secondary: #FFFFFF;
+    --color-text-primary: #111111;
+    --color-text-secondary: #5D5D5D;
+    --color-interactive-cta: #0F62FE;
+    --color-interactive-cta-hover: #4181ff;
+    --color-interactive-cta-text: #FFFFFF;
+    --color-interactive-active: #E8EAF6;
+    --color-interactive-hover: #E0E0E0;
+    --color-border: #E0E0E0;
+    --shadow-level1: 4px 0 16px -4px rgba(0,0,0,0.1);
+    --shadow-level2: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+
+/* Light theme specific error message styling */
+[data-theme="light"] .error-message-external {
+    background-color: #FFEBEE;
+    color: #C62828;
+    border: 1px solid rgba(198, 40, 40, 0.15);
+}

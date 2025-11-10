@@ -1,0 +1,205 @@
+.bottom-navigation {
+    position: fixed;
+    bottom: 28px;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background-color: var(--color-surface-primary);
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    z-index: 100;
+    display: none;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(8px);
+    transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.bottom-navigation.is-ready {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+@media (max-width: 1023px) {
+    .bottom-navigation {
+        display: flex;
+    }
+
+    .sidenav {
+        display: none;
+    }
+
+    .titlebar.with-sidenav {
+        margin-left: 0;
+    }
+
+    .titlebar-logo-container.logged-in {
+        display: flex !important;
+    }
+
+    .app-content {
+        margin-left: 0 !important;
+        bottom: 80px !important;
+    }
+}
+
+.bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    height: 54px;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: background-color 200ms ease;
+    border-radius: 4px;
+    box-sizing: border-box;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.bottom-nav-item:active {
+    background-color: var(--color-interactive-hover);
+}
+
+.bottom-nav-item.active {
+    color: var(--color-interactive-cta);
+}
+
+.bottom-nav-item-icon {
+    width: 22px;
+    height: 22px;
+    color: var(--color-text-primary);
+    flex-shrink: 0;
+}
+
+.bottom-nav-item.active .bottom-nav-item-icon {
+    color: var(--color-interactive-cta);
+}
+
+.bottom-nav-item-text {
+    font-size: 14px;
+    color: var(--color-text-primary);
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.bottom-nav-item.active .bottom-nav-item-text {
+    color: var(--color-interactive-cta);
+    font-weight: 500;
+}
+
+/* Overflow Menu Item */
+.bottom-nav-item.overflow-menu {
+    display: none;
+}
+
+.bottom-nav-item.overflow-menu.visible {
+    display: flex;
+}
+
+.bottom-nav-item-dots {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+    justify-content: center;
+    height: 22px;
+}
+
+.bottom-nav-item-dots span {
+    width: 4px;
+    height: 4px;
+    background-color: var(--color-text-primary);
+    border-radius: 50%;
+}
+
+.bottom-nav-item.active .bottom-nav-item-dots span {
+    background-color: var(--color-interactive-cta);
+}
+
+/* Overflow Popup Menu */
+.bottom-nav-overflow-popup {
+    position: fixed;
+    bottom: 84px;
+    right: 8px;
+    background-color: var(--color-surface-primary);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    min-width: 200px;
+    max-width: 280px;
+    z-index: 101;
+    display: none;
+    overflow: hidden;
+}
+
+.bottom-nav-overflow-popup.show {
+    display: block;
+    animation: slideUpFadeIn 200ms ease-out;
+}
+
+@keyframes slideUpFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.bottom-nav-overflow-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background-color 200ms ease;
+    gap: 12px;
+}
+
+.bottom-nav-overflow-item:hover {
+    background-color: var(--color-interactive-hover);
+}
+
+.bottom-nav-overflow-item:active {
+    background-color: var(--color-interactive-hover);
+}
+
+.bottom-nav-overflow-item.active {
+    background-color: var(--color-interactive-hover);
+}
+
+.bottom-nav-overflow-item-icon {
+    width: 22px;
+    height: 22px;
+    color: var(--color-text-primary);
+    flex-shrink: 0;
+}
+
+.bottom-nav-overflow-item.active .bottom-nav-overflow-item-icon {
+    color: var(--color-interactive-cta);
+}
+
+.bottom-nav-overflow-item-text {
+    font-size: 14px;
+    color: var(--color-text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bottom-nav-overflow-item.active .bottom-nav-overflow-item-text {
+    color: var(--color-interactive-cta);
+    font-weight: 500;
+}

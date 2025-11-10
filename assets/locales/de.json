@@ -1,0 +1,79 @@
+{
+    "app": {
+        "title": "SimpliMed"
+    },
+    "login": {
+        "title": "Anmeldung",
+        "username": "Benutzername",
+        "password": "Passwort",
+        "rememberMe": "Angemeldet bleiben",
+        "forgotPassword": "Passwort vergessen?",
+        "loginButton": "Anmelden",
+        "patientLogin": "Login Patienten",
+        "therapistLogin": "Login Therapeuten",
+        "switchToTherapist": "Zum Therapeuten Login",
+        "switchToPatient": "Zum Patienten Login",
+        "errorInvalidCredentials": "Benutzername oder Passwort falsch",
+        "errorNetworkFailed": "Verbindung fehlgeschlagen"
+    },
+    "avatar": {
+        "language": "Sprache",
+        "theme": "Design",
+        "help": "Hilfe",
+        "contact": "Kontakt",
+        "imprint": "Impressum"
+    },
+    "statusbar": {
+        "ready": "Bereit",
+        "connected": "Verbunden",
+        "connecting": "Verbinde...",
+        "module": "Modul",
+        "user": "Benutzer",
+        "release": "Release"
+    },
+    "menu": {
+        "profile": "Profil",
+        "settings": "Einstellungen",
+        "help": "Hilfe",
+        "contact": "Kontakt",
+        "imprint": "Impressum",
+        "logout": "Abmelden"
+    },
+    "themes": {
+        "light": "Light-Theme",
+        "dark": "Dark-Theme",
+        "design": "Design-Theme",
+        "contrast": "Kontrast-Theme"
+    },
+    "modules": {
+        "dashboard": "Übersicht",
+        "calendar": "Kalender",
+        "contacts": "Kontakte",
+        "documentation": "Dokumentation",
+        "invoices": "Rechnungen",
+        "payments": "Zahlungen",
+        "healthtalk": "Healthtalk",
+        "healthshop": "Healthshop",
+        "appointments": "Termine",
+        "documents": "Dokumente"
+    },
+    "buttons": {
+        "new": "Neu",
+        "add": "Eintrag hinzufügen",
+        "addWidget": "Widget hinzufügen",
+        "more": "Weitere"
+    },
+    "search": {
+        "actionOrCommand": "Aktion oder Befehl ausführen...",
+        "search": "Suchen...",
+        "action": "Aktion ausführen...",
+        "clear": "Suche löschen"
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "content": "Dashboard-Inhalte werden in späteren Schritten implementiert.",
+        "createNewEntry": "Neuen Eintrag erstellen",
+        "addWidgetDialog": "Widget hinzufügen - Dialog wird hier implementiert",
+        "createEntryDialog": "Neuen Eintrag erstellen - Dialog wird hier implementiert"
+    }
+}

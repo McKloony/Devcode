@@ -1,0 +1,79 @@
+{
+    "app": {
+        "title": "SimpliMed"
+    },
+    "login": {
+        "title": "Connexion",
+        "username": "Nom d'utilisateur",
+        "password": "Mot de passe",
+        "rememberMe": "Rester connecté",
+        "forgotPassword": "Mot de passe oublié ?",
+        "loginButton": "Se connecter",
+        "patientLogin": "Connexion Patient",
+        "therapistLogin": "Connexion Thérapeute",
+        "switchToTherapist": "Passer à la connexion Thérapeute",
+        "switchToPatient": "Passer à la connexion Patient",
+        "errorInvalidCredentials": "Nom d'utilisateur ou mot de passe incorrect",
+        "errorNetworkFailed": "Échec de connexion"
+    },
+    "avatar": {
+        "language": "Langue",
+        "theme": "Thème",
+        "help": "Aide",
+        "contact": "Contact",
+        "imprint": "Mentions légales"
+    },
+    "statusbar": {
+        "ready": "Prêt",
+        "connected": "Connecté",
+        "connecting": "Connexion...",
+        "module": "Module",
+        "user": "Utilisateur",
+        "release": "Version"
+    },
+    "menu": {
+        "profile": "Profil",
+        "settings": "Paramètres",
+        "help": "Aide",
+        "contact": "Contact",
+        "imprint": "Mentions légales",
+        "logout": "Déconnexion"
+    },
+    "themes": {
+        "light": "Light-Theme",
+        "dark": "Dark-Theme",
+        "design": "Design-Theme",
+        "contrast": "Contrast-Theme"
+    },
+    "modules": {
+        "dashboard": "Vue d'ensemble",
+        "calendar": "Calendrier",
+        "contacts": "Contacts",
+        "documentation": "Documentation",
+        "invoices": "Factures",
+        "payments": "Paiements",
+        "healthtalk": "Healthtalk",
+        "healthshop": "Healthshop",
+        "appointments": "Rendez-vous",
+        "documents": "Documents"
+    },
+    "buttons": {
+        "new": "Nouveau",
+        "add": "Ajouter une entrée",
+        "addWidget": "Ajouter un widget",
+        "more": "Plus"
+    },
+    "search": {
+        "actionOrCommand": "Exécuter une action ou commande...",
+        "search": "Rechercher...",
+        "action": "Exécuter une action...",
+        "clear": "Effacer la recherche"
+    },
+    "dashboard": {
+        "title": "Tableau de bord",
+        "content": "Le contenu du tableau de bord sera implémenté dans les étapes suivantes.",
+        "createNewEntry": "Créer une nouvelle entrée",
+        "addWidgetDialog": "Ajouter un widget - La boîte de dialogue sera implémentée ici",
+        "createEntryDialog": "Créer une nouvelle entrée - La boîte de dialogue sera implémentée ici"
+    }
+}

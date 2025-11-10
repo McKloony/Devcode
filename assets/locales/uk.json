@@ -1,0 +1,79 @@
+{
+    "app": {
+        "title": "SimpliMed"
+    },
+    "login": {
+        "title": "Вхід",
+        "username": "Ім'я користувача",
+        "password": "Пароль",
+        "rememberMe": "Залишатися в системі",
+        "forgotPassword": "Забули пароль?",
+        "loginButton": "Увійти",
+        "patientLogin": "Вхід для пацієнта",
+        "therapistLogin": "Вхід для терапевта",
+        "switchToTherapist": "Перемкнутися на вхід для терапевта",
+        "switchToPatient": "Перемкнутися на вхід для пацієнта",
+        "errorInvalidCredentials": "Невірне ім'я користувача або пароль",
+        "errorNetworkFailed": "Помилка з'єднання"
+    },
+    "avatar": {
+        "language": "Мова",
+        "theme": "Тема",
+        "help": "Допомога",
+        "contact": "Контакт",
+        "imprint": "Вихідні дані"
+    },
+    "statusbar": {
+        "ready": "Готово",
+        "connected": "Підключено",
+        "connecting": "Підключення...",
+        "module": "Модуль",
+        "user": "Користувач",
+        "release": "Реліз"
+    },
+    "menu": {
+        "profile": "Профіль",
+        "settings": "Налаштування",
+        "help": "Допомога",
+        "contact": "Контакт",
+        "imprint": "Вихідні дані",
+        "logout": "Вийти"
+    },
+    "themes": {
+        "light": "Light-Theme",
+        "dark": "Dark-Theme",
+        "design": "Design-Theme",
+        "contrast": "Contrast-Theme"
+    },
+    "modules": {
+        "dashboard": "Огляд",
+        "calendar": "Календар",
+        "contacts": "Контакти",
+        "documentation": "Документація",
+        "invoices": "Рахунки",
+        "payments": "Платежі",
+        "healthtalk": "Healthtalk",
+        "healthshop": "Healthshop",
+        "appointments": "Зустрічі",
+        "documents": "Документи"
+    },
+    "buttons": {
+        "new": "Новий",
+        "add": "Додати запис",
+        "addWidget": "Додати віджет",
+        "more": "Більше"
+    },
+    "search": {
+        "actionOrCommand": "Виконати дію або команду...",
+        "search": "Пошук...",
+        "action": "Виконати дію...",
+        "clear": "Очистити пошук"
+    },
+    "dashboard": {
+        "title": "Панель керування",
+        "content": "Вміст панелі керування буде реалізовано на наступних етапах.",
+        "createNewEntry": "Створити новий запис",
+        "addWidgetDialog": "Додати віджет - Діалог буде реалізовано тут",
+        "createEntryDialog": "Створити новий запис - Діалог буде реалізовано тут"
+    }
+}

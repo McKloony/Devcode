@@ -1,0 +1,255 @@
+:root {
+    /* Light Theme Default */
+    --color-surface-primary: #FFFFFF;
+    --color-surface-primary-variant: #FAFAFA;
+    --color-surface-secondary: #F5F5F5;
+    --color-text-primary: #111111;
+    --color-text-secondary: #5D5D5D;
+    --color-interactive-cta: #0F62FE;
+    --color-interactive-cta-hover: #4181ff;
+    --color-interactive-cta-text: #FFFFFF;
+    --color-interactive-active: #E8EAF6;
+    --color-interactive-hover: #E0E0E0;
+    --color-border: #E0E0E0;
+    --color-border-rgb: 224, 224, 224;
+    --shadow-level1: 4px 0 16px -4px rgba(0,0,0,0.1);
+    --shadow-level2: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--color-surface-primary);
+    color: var(--color-text-primary);
+    overflow-x: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+input,
+textarea,
+select {
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+}
+
+/* Deaktiviere Text-Selektion für UI-Elemente */
+.no-select {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.app-content {
+    position: fixed;
+    top: 56px;
+    left: 0;
+    right: 0;
+    bottom: 24px;
+    overflow-y: auto;
+    background-color: var(--color-surface-primary-variant);
+    z-index: 1;
+    transition: margin-left 230ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100%;
+    padding: 24px;
+}
+
+.login-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+}
+
+.login-card {
+    background-color: var(--color-surface-primary);
+    border-radius: 8px;
+    padding: 28px 32px;
+    width: 100%;
+    box-shadow: 0 8px 24px -4px rgba(0,0,0,0.15), 0 6px 12px -2px rgba(0,0,0,0.08);
+    border: 1px solid rgba(var(--color-border-rgb, 224, 224, 224), 0.3);
+}
+
+.login-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.login-subtitle {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-label {
+    display: block;
+    font-size: 14px;
+    color: var(--color-text-primary);
+    margin-bottom: 8px;
+}
+
+.form-input {
+    width: 100%;
+    height: 40px;
+    padding: 8px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background-color: var(--color-surface-secondary);
+    color: var(--color-text-primary);
+    font-size: 14px;
+    transition: border-color 200ms ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--color-interactive-cta);
+}
+
+/* Hide Edge-specific password reveal icon so only our custom toggle is shown */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none;
+}
+
+.form-checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.form-checkbox {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.form-checkbox-label {
+    font-size: 14px;
+    color: var(--color-text-primary);
+    cursor: pointer;
+}
+
+a {
+    transition: filter 200ms ease;
+}
+
+a:hover {
+    filter: brightness(1.2);
+}
+
+.form-link {
+    display: block;
+    font-size: 14px;
+    color: var(--color-interactive-cta);
+    text-decoration: none;
+    margin-bottom: 8px;
+    text-align: left;
+}
+
+.form-link:hover {
+}
+
+.btn-primary {
+    width: 100%;
+    height: 40px;
+    background-color: var(--color-interactive-cta);
+    color: var(--color-interactive-cta-text);
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 16px;
+    transition: background-color 200ms ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-primary:hover {
+    background-color: var(--color-interactive-cta-hover);
+}
+
+.btn-primary:active {
+    background-color: var(--color-interactive-cta);
+}
+
+.error-message {
+    background-color: #FEE;
+    color: #C00;
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.switch-login-type-link {
+    display: block;
+    font-size: 14px;
+    color: var(--color-interactive-cta);
+    text-decoration: none;
+    margin-top: 20px;
+    text-align: center;
+    padding: 8px 16px;
+    transition: filter 200ms ease;
+}
+
+.switch-login-type-link:hover {
+    filter: brightness(1.2);
+}
+
+.error-message-external {
+    position: absolute;
+    top: calc(100% + 24px);
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255, 0, 0, 0.1);
+    color: #D32F2F;
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    z-index: 10;
+    border: 1px solid rgba(211, 47, 47, 0.2);
+}
+
+.app-content.with-toolbar {
+    top: 104px !important;
+}
+
+@media (max-width: 1023px) {
+    .app-content.with-toolbar {
+        top: 112px !important; /* 56px titlebar + 56px mobile-toolbar */
+    }
+}

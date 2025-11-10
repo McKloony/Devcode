@@ -1,0 +1,79 @@
+{
+    "app": {
+        "title": "SimpliMed"
+    },
+    "login": {
+        "title": "Вход",
+        "username": "Имя пользователя",
+        "password": "Пароль",
+        "rememberMe": "Оставаться в системе",
+        "forgotPassword": "Забыли пароль?",
+        "loginButton": "Войти",
+        "patientLogin": "Вход для пациента",
+        "therapistLogin": "Вход для терапевта",
+        "switchToTherapist": "Переключиться на вход для терапевта",
+        "switchToPatient": "Переключиться на вход для пациента",
+        "errorInvalidCredentials": "Неверное имя пользователя или пароль",
+        "errorNetworkFailed": "Ошибка соединения"
+    },
+    "avatar": {
+        "language": "Язык",
+        "theme": "Тема",
+        "help": "Помощь",
+        "contact": "Контакт",
+        "imprint": "Выходные данные"
+    },
+    "statusbar": {
+        "ready": "Готово",
+        "connected": "Подключено",
+        "connecting": "Подключение...",
+        "module": "Модуль",
+        "user": "Пользователь",
+        "release": "Релиз"
+    },
+    "menu": {
+        "profile": "Профиль",
+        "settings": "Настройки",
+        "help": "Помощь",
+        "contact": "Контакт",
+        "imprint": "Выходные данные",
+        "logout": "Выйти"
+    },
+    "themes": {
+        "light": "Light-Theme",
+        "dark": "Dark-Theme",
+        "design": "Design-Theme",
+        "contrast": "Contrast-Theme"
+    },
+    "modules": {
+        "dashboard": "Обзор",
+        "calendar": "Календарь",
+        "contacts": "Контакты",
+        "documentation": "Документация",
+        "invoices": "Счета",
+        "payments": "Платежи",
+        "healthtalk": "Healthtalk",
+        "healthshop": "Healthshop",
+        "appointments": "Встречи",
+        "documents": "Документы"
+    },
+    "buttons": {
+        "new": "Новый",
+        "add": "Добавить запись",
+        "addWidget": "Добавить виджет",
+        "more": "Больше"
+    },
+    "search": {
+        "actionOrCommand": "Выполнить действие или команду...",
+        "search": "Поиск...",
+        "action": "Выполнить действие...",
+        "clear": "Очистить поиск"
+    },
+    "dashboard": {
+        "title": "Панель управления",
+        "content": "Содержание панели управления будет реализовано на следующих этапах.",
+        "createNewEntry": "Создать новую запись",
+        "addWidgetDialog": "Добавить виджет - Диалог будет реализован здесь",
+        "createEntryDialog": "Создать новую запись - Диалог будет реализован здесь"
+    }
+}

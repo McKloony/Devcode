@@ -1,0 +1,79 @@
+{
+    "app": {
+        "title": "SimpliMed"
+    },
+    "login": {
+        "title": "Inloggen",
+        "username": "Gebruikersnaam",
+        "password": "Wachtwoord",
+        "rememberMe": "Ingelogd blijven",
+        "forgotPassword": "Wachtwoord vergeten?",
+        "loginButton": "Inloggen",
+        "patientLogin": "Patiënt Login",
+        "therapistLogin": "Therapeut Login",
+        "switchToTherapist": "Overschakelen naar Therapeut Login",
+        "switchToPatient": "Overschakelen naar Patiënt Login",
+        "errorInvalidCredentials": "Ongeldige gebruikersnaam of wachtwoord",
+        "errorNetworkFailed": "Verbinding mislukt"
+    },
+    "avatar": {
+        "language": "Taal",
+        "theme": "Thema",
+        "help": "Help",
+        "contact": "Contact",
+        "imprint": "Colofon"
+    },
+    "statusbar": {
+        "ready": "Gereed",
+        "connected": "Verbonden",
+        "connecting": "Verbinden...",
+        "module": "Module",
+        "user": "Gebruiker",
+        "release": "Versie"
+    },
+    "menu": {
+        "profile": "Profiel",
+        "settings": "Instellingen",
+        "help": "Help",
+        "contact": "Contact",
+        "imprint": "Colofon",
+        "logout": "Uitloggen"
+    },
+    "themes": {
+        "light": "Light-Theme",
+        "dark": "Dark-Theme",
+        "design": "Design-Theme",
+        "contrast": "Contrast-Theme"
+    },
+    "modules": {
+        "dashboard": "Overzicht",
+        "calendar": "Kalender",
+        "contacts": "Contacten",
+        "documentation": "Documentatie",
+        "invoices": "Facturen",
+        "payments": "Betalingen",
+        "healthtalk": "Healthtalk",
+        "healthshop": "Healthshop",
+        "appointments": "Afspraken",
+        "documents": "Documenten"
+    },
+    "buttons": {
+        "new": "Nieuw",
+        "add": "Item toevoegen",
+        "addWidget": "Widget toevoegen",
+        "more": "Meer"
+    },
+    "search": {
+        "actionOrCommand": "Actie of opdracht uitvoeren...",
+        "search": "Zoeken...",
+        "action": "Actie uitvoeren...",
+        "clear": "Zoekopdracht wissen"
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "content": "Dashboard-inhoud wordt in latere stappen geïmplementeerd.",
+        "createNewEntry": "Nieuw item aanmaken",
+        "addWidgetDialog": "Widget toevoegen - Dialoog wordt hier geïmplementeerd",
+        "createEntryDialog": "Nieuw item aanmaken - Dialoog wordt hier geïmplementeerd"
+    }
+}

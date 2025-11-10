@@ -1,0 +1,39 @@
+[data-theme="contrast"] {
+    --color-surface-primary: #000000;
+    --color-surface-primary-variant: #000000;
+    --color-surface-secondary: #000000;
+    --color-text-primary: #FFFFFF;
+    --color-text-secondary: #FFFFFF;
+    --color-interactive-cta: #FFFFFF;
+    --color-interactive-cta-hover: #DDDDDD;
+    --color-interactive-cta-text: #000000;
+    --color-interactive-active: #444444;
+    --color-interactive-hover: #333333;
+    --color-border: #FFFFFF;
+    --shadow-level1: none;
+    --shadow-level2: none;
+}
+
+/* Contrast theme specific login card border */
+[data-theme="contrast"] .login-card {
+    border: 2px solid var(--color-border);
+    box-shadow: none;
+}
+
+/* Contrast theme specific external elements */
+[data-theme="contrast"] .error-message-external {
+    background-color: #FF0000;
+    color: #FFFFFF;
+    border: 2px solid #FF0000;
+    font-weight: 600;
+}
+
+[data-theme="contrast"] .switch-login-type-link {
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+}
+
+[data-theme="contrast"] .switch-login-type-link:hover {
+    background-color: var(--color-interactive-hover);
+}

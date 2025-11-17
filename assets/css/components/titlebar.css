@@ -1,6 +1,6 @@
 .titlebar {
     height: 56px;
-    background-color: var(--color-surface-primary);
+    background-color: var(--color-titlebar-surface, var(--color-surface-primary));
     border-bottom: 1px solid var(--color-border);
     display: flex;
     gap: 24px;
@@ -48,26 +48,45 @@
     gap: 16px;
 }
 
+.avatar-container {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 20px;
+}
+
+.avatar-container:hover {
+    background-color: var(--color-interactive-hover);
+}
+
 .avatar {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background-color: var(--color-interactive-hover);
+    background-color: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    transition: transform 200ms ease, box-shadow 200ms ease, background-color 200ms ease;
-}
-
-.avatar:hover {
-    transform: scale(1.05);
-    box-shadow: var(--shadow-level2);
+    flex-shrink: 0;
 }
 
 .avatar-icon {
     width: 20px;
     height: 20px;
+    color: var(--color-text-primary);
+}
+
+.avatar-indicator {
+    width: 16px;
+    height: 16px;
+    color: var(--color-text-secondary);
+    flex-shrink: 0;
+    transition: transform 200ms ease;
+}
+
+.avatar-container:hover .avatar-indicator {
     color: var(--color-text-primary);
 }
 
@@ -101,18 +120,17 @@
     border-radius: 4px;
     background-color: var(--color-surface-secondary);
     color: var(--color-text-primary);
-    font-size: 14px;
-    transition: border-color 200ms ease, background-color 200ms ease;
+    font-size: var(--form-control-font-size);
 }
 
 .search-input:focus {
     outline: none;
-    border-color: var(--color-interactive-cta);
+    border-color: #9CA3AF;
     background-color: var(--color-surface-secondary);
 }
 
 .search-input::placeholder {
-    color: var(--color-text-secondary);
+    color: #9CA3AF;
 }
 
 .search-icon {
@@ -143,7 +161,7 @@
     cursor: pointer;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 150ms ease, color 150ms ease, background-color 150ms ease;
+    transition: opacity 150ms ease;
 }
 
 .search-clear-button .iconify {
@@ -169,10 +187,10 @@
 
 .avatar-menu {
     position: absolute;
-    top: 48px;
+    top: 55px;
     right: 16px;
     width: 200px;
-    background-color: var(--color-surface-primary);
+    background-color: var(--color-titlebar-surface, var(--color-surface-primary));
     border: 1px solid var(--color-border);
     border-radius: 8px;
     box-shadow: var(--shadow-level2);
@@ -200,7 +218,6 @@
     align-items: center;
     gap: 12px;
     cursor: pointer;
-    transition: background-color 200ms ease;
 }
 
 .avatar-menu-item:hover {

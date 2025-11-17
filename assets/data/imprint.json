@@ -1,0 +1,28 @@
+{
+    "title": "Impressum",
+    "subtitle": "Anbieterkennzeichnung",
+    "company": {
+        "name": "SimpliMed GmbH",
+        "address": {
+            "street": "Am Ehrenmal 19",
+            "zipCode": "51588",
+            "city": "Nümbrecht",
+            "country": "Deutschland"
+        },
+        "registration": {
+            "court": "Siegburg",
+            "number": "HRB 11878"
+        },
+        "management": "Marcus Schmitz",
+        "vatId": "DE282076515",
+        "contact": {
+            "phone": "+49 (2293) 8192710",
+            "fax": "+49 (2293) 8192780",
+            "email": "info(@)simplimed.de"
+        }
+    },
+    "disclaimer": {
+        "title": "Haftungshinweis",
+        "text": "Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir keine Haftung für die Inhalte externer Links. Für die Inhalte verlinkter Seiten sind ausschließlich deren Betreiber zuständig."
+    }
+}

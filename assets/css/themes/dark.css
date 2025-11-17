@@ -2,17 +2,37 @@
     --color-surface-primary: #2D2D2D;
     --color-surface-primary-variant: #323232;
     --color-surface-secondary: #424242;
+    --color-shell-surface: var(--color-surface-primary);
+    --color-titlebar-surface: #323232;
     --color-text-primary: #E0E0E0;
     --color-text-secondary: #9E9E9E;
-    --color-interactive-cta: #B4CBF0;
-    --color-interactive-cta-hover: #D6E2F8;
-    --color-interactive-cta-text: #000000;
-    --color-interactive-active: #4A4458;
-    --color-interactive-hover: #555555;
-    --color-border: #555555;
-    --color-border-rgb: 45, 45, 45;
-    --shadow-level1: 4px 0 16px -4px rgba(0,0,0,0.5);
+    /* Kontextfarbe des Dark-Themes: CTA- und Auswahlzustände nur hier anpassen */
+    --color-context-background: #007BB4;
+    --color-context-foreground: #FFFFFF;
+    --color-interactive-cta: var(--color-context-background);
+    --color-interactive-cta-hover: #969696;
+    --color-interactive-cta-text: var(--color-context-foreground);
+    --color-interactive-active: var(--color-context-background);
+    --color-interactive-hover: #969696;
+    --color-border: #404040;
+    --color-border-rgb: 64, 64, 64;
+    --shadow-level1: 4px 0 16px -4px rgba(0,0,0,0.1);
     --shadow-level2: 0 4px 6px -1px rgba(0,0,0,0.6);
+    --color-link-accent: #C48AE0;
+    --color-input-surface: rgba(255, 255, 255, 0.05);
+}
+
+/* Spezifische Dark-Theme-Hintergründe laut Vorgabe */
+[data-theme="dark"] .app-content {
+    background-color: #2D2D2D;
+}
+
+[data-theme="dark"] .app-content.with-toolbar {
+    background-color: var(--color-titlebar-surface);
+}
+
+[data-theme="dark"] .login-card {
+    background-color: #323232;
 }
 
 /* Dark theme specific error message styling */
@@ -20,4 +40,59 @@
     background-color: rgba(239, 83, 80, 0.15);
     color: #EF5350;
     border: 1px solid rgba(239, 83, 80, 0.3);
+}
+
+/* Link- und Buttonbar-Akzentfarben im Dark Theme aufhellen */
+[data-theme="dark"] a,
+[data-theme="dark"] .form-link,
+[data-theme="dark"] .switch-login-type-link {
+    color: var(--color-context-background);
+}
+
+[data-theme="dark"] a:hover,
+[data-theme="dark"] .form-link:hover,
+[data-theme="dark"] .switch-login-type-link:hover {
+    color: var(--color-interactive-hover);
+}
+
+[data-theme="dark"] .bottom-nav-item.active,
+[data-theme="dark"] .bottom-nav-item.active .bottom-nav-item-text,
+[data-theme="dark"] .bottom-nav-item.active .bottom-nav-item-icon {
+    color: var(--color-context-foreground);
+}
+
+[data-theme="dark"] .bottom-nav-item.active .bottom-nav-item-dots span {
+    background-color: var(--color-context-foreground);
+}
+
+[data-theme="dark"] .bottom-nav-overflow-item.active {
+    background-color: var(--color-context-background);
+}
+
+[data-theme="dark"] .bottom-nav-overflow-item.active .bottom-nav-overflow-item-text,
+[data-theme="dark"] .bottom-nav-overflow-item.active .bottom-nav-overflow-item-icon {
+    color: var(--color-context-foreground);
+}
+
+/* Eingabefelder im Dark Theme an allgemeine Feldfarben angleichen */
+[data-theme="dark"] .form-input {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .form-input::placeholder {
+    color: rgb(175, 175, 175);
+}
+
+/* Floating Action Button im Dark Theme angleichen */
+[data-theme="dark"] .fab {
+    width: 56px;
+    height: 56px;
+    border-radius: 28px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .fab:active {
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.24);
 }

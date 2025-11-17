@@ -1,0 +1,54 @@
+# SimpliMed SPA - IONOS Webserver Optimierung
+
+# Kompression aktivieren
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json
+</IfModule>
+
+# Browser-Caching aktivieren
+<IfModule mod_expires.c>
+    ExpiresActive On
+
+    # HTML - kurz cachen (1 Stunde)
+    ExpiresByType text/html "access plus 1 hour"
+
+    # CSS/JS - länger cachen (1 Monat)
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+
+    # Bilder - sehr lang cachen (1 Jahr)
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+
+    # JSON - mittel cachen (1 Woche)
+    ExpiresByType application/json "access plus 1 week"
+</IfModule>
+
+# Sicherheitsheader
+<IfModule mod_headers.c>
+    # XSS-Schutz
+    Header set X-XSS-Protection "1; mode=block"
+
+    # Clickjacking-Schutz
+    Header set X-Frame-Options "SAMEORIGIN"
+
+    # MIME-Type Sniffing verhindern
+    Header set X-Content-Type-Options "nosniff"
+
+    # Referrer Policy
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Cache-Control für bessere Performance
+<FilesMatch "\.(css|js)$">
+    Header set Cache-Control "public, max-age=2592000"
+</FilesMatch>
+
+<FilesMatch "\.(html)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+</FilesMatch>
+
+# Fehlerseiten (optional)
+ErrorDocument 404 /index.html

@@ -4,7 +4,7 @@
     left: 0;
     right: 0;
     height: 56px;
-    background-color: var(--color-surface-primary);
+    background-color: var(--color-shell-surface, var(--color-surface-primary));
     border-top: 1px solid var(--color-border);
     display: flex;
     justify-content: space-evenly;
@@ -12,18 +12,6 @@
     z-index: 100;
     display: none;
     overflow: hidden;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transform: translateY(8px);
-    transition: opacity 180ms ease, transform 180ms ease;
-}
-
-.bottom-navigation.is-ready {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transform: translateY(0);
 }
 
 @media (max-width: 1023px) {
@@ -58,19 +46,34 @@
     height: 54px;
     cursor: pointer;
     padding: 4px 8px;
-    transition: background-color 200ms ease;
     border-radius: 4px;
     box-sizing: border-box;
     position: relative;
     flex-shrink: 0;
 }
 
+.bottom-nav-item:hover {
+    background-color: var(--color-interactive-hover);
+    box-shadow: inset 0 -1px 0 var(--color-surface-primary);
+    color: var(--color-context-foreground);
+}
+
+.bottom-nav-item:hover .bottom-nav-item-icon,
+.bottom-nav-item:hover .bottom-nav-item-text,
+.bottom-nav-item:active .bottom-nav-item-icon,
+.bottom-nav-item:active .bottom-nav-item-text {
+    color: var(--color-context-foreground);
+}
+
 .bottom-nav-item:active {
     background-color: var(--color-interactive-hover);
+    color: var(--color-context-foreground);
 }
 
 .bottom-nav-item.active {
-    color: var(--color-interactive-cta);
+    background-color: var(--color-context-background);
+    color: var(--color-context-foreground);
+    box-shadow: inset 0 -1px 0 var(--color-surface-primary);
 }
 
 .bottom-nav-item-icon {
@@ -81,7 +84,7 @@
 }
 
 .bottom-nav-item.active .bottom-nav-item-icon {
-    color: var(--color-interactive-cta);
+    color: var(--color-context-foreground);
 }
 
 .bottom-nav-item-text {
@@ -95,8 +98,8 @@
 }
 
 .bottom-nav-item.active .bottom-nav-item-text {
-    color: var(--color-interactive-cta);
-    font-weight: 500;
+    color: var(--color-context-foreground);
+    font-weight: 400;
 }
 
 /* Overflow Menu Item */
@@ -123,8 +126,13 @@
     border-radius: 50%;
 }
 
+.bottom-nav-item:hover .bottom-nav-item-dots span,
+.bottom-nav-item:active .bottom-nav-item-dots span {
+    background-color: var(--color-context-foreground);
+}
+
 .bottom-nav-item.active .bottom-nav-item-dots span {
-    background-color: var(--color-interactive-cta);
+    background-color: var(--color-context-foreground);
 }
 
 /* Overflow Popup Menu */
@@ -132,7 +140,7 @@
     position: fixed;
     bottom: 84px;
     right: 8px;
-    background-color: var(--color-surface-primary);
+    background-color: var(--color-shell-surface, var(--color-surface-primary));
     border: 1px solid var(--color-border);
     border-radius: 8px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
@@ -164,20 +172,28 @@
     align-items: center;
     padding: 12px 16px;
     cursor: pointer;
-    transition: background-color 200ms ease;
     gap: 12px;
 }
 
 .bottom-nav-overflow-item:hover {
     background-color: var(--color-interactive-hover);
+    color: var(--color-context-foreground);
 }
 
 .bottom-nav-overflow-item:active {
     background-color: var(--color-interactive-hover);
+    color: var(--color-context-foreground);
+}
+
+.bottom-nav-overflow-item:hover .bottom-nav-overflow-item-icon,
+.bottom-nav-overflow-item:hover .bottom-nav-overflow-item-text,
+.bottom-nav-overflow-item:active .bottom-nav-overflow-item-icon,
+.bottom-nav-overflow-item:active .bottom-nav-overflow-item-text {
+    color: var(--color-context-foreground);
 }
 
 .bottom-nav-overflow-item.active {
-    background-color: var(--color-interactive-hover);
+    background-color: var(--color-context-background);
 }
 
 .bottom-nav-overflow-item-icon {
@@ -188,7 +204,7 @@
 }
 
 .bottom-nav-overflow-item.active .bottom-nav-overflow-item-icon {
-    color: var(--color-interactive-cta);
+    color: var(--color-context-foreground);
 }
 
 .bottom-nav-overflow-item-text {
@@ -200,6 +216,6 @@
 }
 
 .bottom-nav-overflow-item.active .bottom-nav-overflow-item-text {
-    color: var(--color-interactive-cta);
-    font-weight: 500;
+    color: var(--color-context-foreground);
+    font-weight: 400;
 }

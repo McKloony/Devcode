@@ -1,9 +1,10 @@
 /**
- * Einfacher Router f�r SimpliMed
+ * Einfacher Router für SimpliMed
  */
 
 const Router = {
     currentView: 'login',
+    _autoLoginAttempted: false,
 
     /**
      * Navigiert zu einer View
@@ -21,6 +22,28 @@ const Router = {
         const app = document.getElementById('app');
 
         if (!AuthManager.isLoggedIn()) {
+            if (!this._autoLoginAttempted) {
+                this._autoLoginAttempted = true;
+                const rememberChoice = AuthManager.getRememberChoice();
+                const rememberedUser = AuthManager.getRememberedUser();
+
+                if (rememberChoice === true && rememberedUser) {
+                    const userType = AuthManager.getLastLoginType();
+                    const success = AuthManager.login(
+                        rememberedUser.username,
+                        rememberedUser.password,
+                        userType,
+                        true
+                    );
+
+                    if (success) {
+                        app.innerHTML = ViewTemplates.getDashboardView(userType);
+                        this.attachDashboardEventListeners(userType);
+                        return;
+                    }
+                }
+            }
+
             app.innerHTML = ViewTemplates.getLoginView();
             this.attachLoginEventListeners();
         } else {
@@ -31,7 +54,7 @@ const Router = {
     },
 
     /**
-     * F�gt Event-Listener f�r Login hinzu
+     * Fügt Event-Listener für Login hinzu
      */
     attachLoginEventListeners() {
         // Wiederherstellen des zuletzt verwendeten Login-Typs
@@ -53,8 +76,19 @@ const Router = {
         if (rememberedUser) {
             document.getElementById('username').value = rememberedUser.username;
             document.getElementById('password').value = rememberedUser.password;
-            document.getElementById('remember-me').checked = true;
         }
+
+        const rememberMeInput = document.getElementById('remember-me');
+        const storedRememberChoice = AuthManager.getRememberChoice();
+        if (storedRememberChoice !== null) {
+            rememberMeInput.checked = storedRememberChoice;
+        } else if (rememberedUser) {
+            rememberMeInput.checked = true;
+        }
+
+        rememberMeInput.addEventListener('change', (event) => {
+            AuthManager.setRememberChoice(event.target.checked);
+        });
 
         // Switch Login Type Link
         document.getElementById('switch-login-type').addEventListener('click', (e) => {
@@ -258,6 +292,45 @@ const Router = {
         }
     },
 
+    /**
+     * Handles module navigation updates (shared logic for all navigation types)
+     * @param {string} moduleId - The module to navigate to
+     * @param {string} moduleName - Display name of the module
+     */
+    handleModuleNavigation(moduleId, moduleName) {
+        // Update title
+        const moduleTitle = document.getElementById('module-title');
+        if (moduleTitle) {
+            moduleTitle.textContent = moduleName;
+        }
+
+        // Update status bar
+        this.updateStatusBar(moduleId);
+
+        // Update search UI
+        this.updateSearchUI(moduleId);
+
+        // Update toolbar button text and FAB icon
+        const ctaText = document.getElementById('cta-text');
+        const fabIcon = document.querySelector('.fab-icon');
+
+        if (ctaText) {
+            ctaText.textContent = moduleId === 'dashboard'
+                ? I18n.t('buttons.addWidget')
+                : I18n.t('buttons.add');
+        }
+
+        if (fabIcon) {
+            fabIcon.setAttribute('data-icon',
+                moduleId === 'dashboard'
+                    ? 'tabler:layout-dashboard'
+                    : 'tabler:plus'
+            );
+        }
+
+        // Module navigation: ${moduleId}
+    },
+
     attachDashboardEventListeners(userType) {
         const sidenav = document.getElementById('sidenav');
         const sidenavToggle = document.getElementById('sidenav-toggle');
@@ -275,16 +348,36 @@ const Router = {
         const fab = document.getElementById('fab');
         const fabText = document.getElementById('fab-text');
 
-        const toggleClearButtonVisibility = (inputEl, buttonEl) => {
-            if (!buttonEl) return;
-            const hasValue = inputEl && inputEl.value.trim().length > 0;
-            buttonEl.classList.toggle('is-visible', hasValue);
+        // Search input helper functions
+        const setupSearchInputs = () => {
+            const toggleClearButtonVisibility = (inputEl, buttonEl) => {
+                if (!buttonEl) return;
+                const hasValue = inputEl && inputEl.value.trim().length > 0;
+                buttonEl.classList.toggle('is-visible', hasValue);
+            };
+
+            const syncClearButtonVisibility = () => {
+                toggleClearButtonVisibility(searchInput, searchClearButton);
+                toggleClearButtonVisibility(mobileSearchInput, mobileSearchClearButton);
+            };
+
+            const syncSearchValues = (sourceInput, targetInput) => {
+                if (targetInput) {
+                    targetInput.value = sourceInput.value;
+                }
+                syncClearButtonVisibility();
+            };
+
+            const clearSearchInputs = () => {
+                if (searchInput) searchInput.value = '';
+                if (mobileSearchInput) mobileSearchInput.value = '';
+                syncClearButtonVisibility();
+            };
+
+            return { syncClearButtonVisibility, syncSearchValues, clearSearchInputs };
         };
 
-        const syncClearButtonVisibility = () => {
-            toggleClearButtonVisibility(searchInput, searchClearButton);
-            toggleClearButtonVisibility(mobileSearchInput, mobileSearchClearButton);
-        };
+        const { syncClearButtonVisibility, syncSearchValues, clearSearchInputs } = setupSearchInputs();
 
         // Toolbar initial anpassen (sichtbar, korrekter Text für Dashboard)
         if (toolbar) {
@@ -294,41 +387,13 @@ const Router = {
             }
         }
 
-        // CTA Button Click Handler (Desktop und Mobile FAB)
-        const handleCtaClick = (e) => {
-            e.preventDefault();
-            const activeModule = document.querySelector('.sidenav-item.active') ||
-                               document.querySelector('.bottom-nav-item.active');
-            const moduleId = activeModule ? activeModule.dataset.module : 'dashboard';
-
-            // Aktion basierend auf aktivem Modul
-            if (moduleId === 'dashboard') {
-                console.log(I18n.t('buttons.addWidget') + ' Dialog öffnen');
-                alert(I18n.t('dashboard.addWidgetDialog'));
-            } else {
-                console.log(I18n.t('dashboard.createNewEntry') + ` in ${moduleId}`);
-                alert(I18n.t('dashboard.createEntryDialog'));
-            }
-        };
-
-        // Desktop CTA Button
-        if (ctaButton) {
-            ctaButton.addEventListener('click', handleCtaClick);
-        }
-
-        // Mobile FAB
-        if (fab) {
-            fab.addEventListener('click', handleCtaClick);
-        }
+        // CTA Button Funktionalität wurde entfernt - Buttons bleiben ohne Funktion
 
         // Mobile Suchfeld Event-Handler
         if (mobileSearchInput) {
             // Synchronisiere mit Desktop-Suchfeld
             mobileSearchInput.addEventListener('input', (e) => {
-                if (searchInput) {
-                    searchInput.value = e.target.value;
-                }
-                syncClearButtonVisibility();
+                syncSearchValues(e.target, searchInput);
             });
 
             // Enter-Taste für Dashboard-Aktionen
@@ -338,12 +403,8 @@ const Router = {
 
                 if (moduleId === 'dashboard' && e.key === 'Enter') {
                     e.preventDefault();
-                    console.log(`Dashboard-Aktion ausgeführt: ${mobileSearchInput.value}`);
-                    mobileSearchInput.value = '';
-                    if (searchInput) {
-                        searchInput.value = '';
-                    }
-                    syncClearButtonVisibility();
+                    // Dashboard action executed
+                    clearSearchInputs();
                 }
             });
         }
@@ -351,31 +412,20 @@ const Router = {
         // Desktop Suchfeld synchronisieren
         if (searchInput) {
             searchInput.addEventListener('input', (e) => {
-                if (mobileSearchInput) {
-                    mobileSearchInput.value = e.target.value;
-                }
-                syncClearButtonVisibility();
+                syncSearchValues(e.target, mobileSearchInput);
             });
         }
 
         if (searchClearButton && searchInput) {
             searchClearButton.addEventListener('click', () => {
-                searchInput.value = '';
-                if (mobileSearchInput) {
-                    mobileSearchInput.value = '';
-                }
-                syncClearButtonVisibility();
+                clearSearchInputs();
                 searchInput.focus();
             });
         }
 
         if (mobileSearchClearButton && mobileSearchInput) {
             mobileSearchClearButton.addEventListener('click', () => {
-                mobileSearchInput.value = '';
-                if (searchInput) {
-                    searchInput.value = '';
-                }
-                syncClearButtonVisibility();
+                clearSearchInputs();
                 mobileSearchInput.focus();
             });
         }
@@ -384,20 +434,18 @@ const Router = {
         this.updateSearchUI('dashboard');
 
         // Event Listener für Such-Prompt auf Dashboard
-        searchInput.addEventListener('keydown', (e) => {
-            const activeModule = document.querySelector('.sidenav-item.active');
-            const moduleId = activeModule ? activeModule.dataset.module : 'dashboard';
+        if (searchInput) {
+            searchInput.addEventListener('keydown', (e) => {
+                const activeModule = document.querySelector('.sidenav-item.active');
+                const moduleId = activeModule ? activeModule.dataset.module : 'dashboard';
 
-            if (moduleId === 'dashboard' && e.key === 'Enter') {
-                e.preventDefault();
-                console.log(`Dashboard-Aktion ausgeführt: ${searchInput.value}`);
-                searchInput.value = '';
-                if (mobileSearchInput) {
-                    mobileSearchInput.value = '';
+                if (moduleId === 'dashboard' && e.key === 'Enter') {
+                    e.preventDefault();
+                    // Dashboard action executed
+                    clearSearchInputs();
                 }
-                syncClearButtonVisibility();
-            }
-        });
+            });
+        }
 
         syncClearButtonVisibility();
 
@@ -449,39 +497,9 @@ const Router = {
                     navItems.forEach(i => i.classList.remove('active'));
                     item.classList.add('active');
 
-                    // Titel im App-Container aktualisieren
+                    // Get module name and handle navigation
                     const moduleName = item.querySelector('.sidenav-item-text').textContent;
-                    document.getElementById('module-title').textContent = moduleName;
-
-                    // Statusleiste aktualisieren
-                    this.updateStatusBar(moduleId);
-
-                    // Suchleiste anpassen
-                    this.updateSearchUI(moduleId);
-
-                    // Toolbar-Button-Text anpassen (Desktop und Mobile FAB)
-                    const ctaText = document.getElementById('cta-text');
-                    const fabIcon = document.querySelector('.fab-icon');
-
-                    if (ctaText) {
-                        if (moduleId === 'dashboard') {
-                            ctaText.textContent = I18n.t('buttons.addWidget');
-                        } else {
-                            ctaText.textContent = I18n.t('buttons.add');
-                        }
-                    }
-
-                    // FAB Icon anpassen
-                    if (fabIcon) {
-                        if (moduleId === 'dashboard') {
-                            fabIcon.setAttribute('data-icon', 'tabler:layout-dashboard');
-                        } else {
-                            fabIcon.setAttribute('data-icon', 'tabler:plus');
-                        }
-                    }
-
-                    // Module werden in späteren Schritten implementiert
-                    console.log(`Navigate to: ${moduleId}`);
+                    this.handleModuleNavigation(moduleId, moduleName);
                 }
             });
         });
@@ -504,45 +522,12 @@ const Router = {
                     }
                 });
 
-                // Titel im App-Container aktualisieren
+                // Get module name and handle navigation
                 const moduleName = item.querySelector('.bottom-nav-item-text').textContent;
-                const moduleTitle = document.getElementById('module-title');
-                if (moduleTitle) {
-                    moduleTitle.textContent = moduleName;
-                }
-
-                // Statusleiste aktualisieren
-                this.updateStatusBar(moduleId);
-
-                // Suchleiste anpassen
-                this.updateSearchUI(moduleId);
-
-                // Toolbar-Button-Text anpassen (Desktop und Mobile FAB)
-                const ctaText = document.getElementById('cta-text');
-                const fabIcon = document.querySelector('.fab-icon');
-
-                if (ctaText) {
-                    if (moduleId === 'dashboard') {
-                        ctaText.textContent = I18n.t('buttons.addWidget');
-                    } else {
-                        ctaText.textContent = I18n.t('buttons.add');
-                    }
-                }
-
-                // FAB Icon anpassen
-                if (fabIcon) {
-                    if (moduleId === 'dashboard') {
-                        fabIcon.setAttribute('data-icon', 'tabler:layout-dashboard');
-                    } else {
-                        fabIcon.setAttribute('data-icon', 'tabler:plus');
-                    }
-                }
+                this.handleModuleNavigation(moduleId, moduleName);
 
                 // Bottom Navigation aktualisieren
                 this.updateBottomNavigation();
-
-                // Module werden in späteren Schritten implementiert
-                console.log(`Navigate to: ${moduleId}`);
             });
         });
 
@@ -588,45 +573,12 @@ const Router = {
                     }
                 });
 
-                // Titel im App-Container aktualisieren
+                // Get module name and handle navigation
                 const moduleName = overflowItem.querySelector('.bottom-nav-overflow-item-text').textContent;
-                const moduleTitle = document.getElementById('module-title');
-                if (moduleTitle) {
-                    moduleTitle.textContent = moduleName;
-                }
-
-                // Statusleiste aktualisieren
-                this.updateStatusBar(moduleId);
-
-                // Suchleiste anpassen
-                this.updateSearchUI(moduleId);
-
-                // Toolbar-Button-Text anpassen
-                const ctaText = document.getElementById('cta-text');
-                const fabIcon = document.querySelector('.fab-icon');
-
-                if (ctaText) {
-                    if (moduleId === 'dashboard') {
-                        ctaText.textContent = I18n.t('buttons.addWidget');
-                    } else {
-                        ctaText.textContent = I18n.t('buttons.add');
-                    }
-                }
-
-                // FAB Icon anpassen
-                if (fabIcon) {
-                    if (moduleId === 'dashboard') {
-                        fabIcon.setAttribute('data-icon', 'tabler:layout-dashboard');
-                    } else {
-                        fabIcon.setAttribute('data-icon', 'tabler:plus');
-                    }
-                }
+                this.handleModuleNavigation(moduleId, moduleName);
 
                 // Bottom Navigation aktualisieren
                 this.updateBottomNavigation();
-
-                // Module werden in späteren Schritten implementiert
-                console.log(`Navigate to: ${moduleId}`);
             });
         }
 
@@ -637,18 +589,29 @@ const Router = {
             this.updateBottomNavigation();
         }
 
-        // Bei Fenstergrößenänderung Bottom Navigation aktualisieren (mit Debouncing)
-        let resizeTimeout;
+        // Bei Fenstergrößenänderung Bottom Navigation aktualisieren (Frame-gebunden für flüssigere Updates)
         const handleResize = () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
+            if (typeof window.requestAnimationFrame === 'function') {
+                if (this._resizeRafId) {
+                    return;
+                }
+                this._resizeRafId = window.requestAnimationFrame(() => {
+                    this._resizeRafId = null;
+                    this.updateBottomNavigation();
+                });
+            } else {
+                // Fallback wenn requestAnimationFrame nicht verfügbar ist
                 this.updateBottomNavigation();
-            }, 150);
+            }
         };
 
         // Entferne vorherigen Listener falls vorhanden
         if (this._resizeHandler) {
             window.removeEventListener('resize', this._resizeHandler);
+            if (this._resizeRafId && typeof window.cancelAnimationFrame === 'function') {
+                window.cancelAnimationFrame(this._resizeRafId);
+                this._resizeRafId = null;
+            }
         }
         this._resizeHandler = handleResize;
         window.addEventListener('resize', handleResize);
@@ -696,7 +659,7 @@ const Router = {
             document.removeEventListener('click', this._avatarOutsideHandler);
         }
         this._avatarOutsideHandler = (e) => {
-            if (!avatarMenu.contains(e.target) && e.target !== avatar) {
+            if (!avatarMenu.contains(e.target) && !avatar.contains(e.target)) {
                 avatarMenu.classList.remove('show');
             }
         };
@@ -725,8 +688,11 @@ const Router = {
                 if (action === 'logout') {
                     AuthManager.logout();
                     this.navigate('login');
+                } else if (action === 'imprint') {
+                    ImprintManager.show();
+                    avatarMenu.classList.remove('show');
                 } else {
-                    console.log(`Action: ${action}`);
+                    // Handle action: ${action}
                     avatarMenu.classList.remove('show');
                 }
             });

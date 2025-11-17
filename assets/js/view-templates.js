@@ -19,10 +19,13 @@ const ViewTemplates = {
                 </div>
                 <div class="titlebar-center"></div>
                 <div class="titlebar-right">
-                    <div class="avatar" id="avatar">
-                        <svg class="avatar-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
+                    <div class="avatar-container" id="avatar">
+                        <div class="avatar">
+                            <svg class="avatar-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        <span class="iconify avatar-indicator" data-icon="tabler:chevron-down"></span>
                     </div>
                 </div>
             </div>
@@ -38,25 +41,29 @@ const ViewTemplates = {
                             <form id="login-form">
                                 <div class="form-group">
                                     <label class="form-label">${I18n.t('login.username')}</label>
-                                    <input type="text" class="form-input" id="username" name="username" required autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="email">
+                                    <input type="text" class="form-input" id="username" name="username" required autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="email" placeholder="${I18n.t('login.usernamePlaceholder')}">
                                 </div>
 
-                                <div id="password-group" class="form-group" style="position: relative;">
+                                <div id="password-group" class="form-group">
                                     <label class="form-label">${I18n.t('login.password')}</label>
-                                    <input type="password" class="form-input" id="password" name="password" required autocomplete="current-password">
-                                    <span id="toggle-password" class="iconify" data-icon="tabler:eye-off" style="position: absolute; right: 10px; top: 38px; cursor: pointer;"></span>
+                                    <div class="password-input-wrapper">
+                                        <input type="password" class="form-input" id="password" name="password" required autocomplete="current-password" placeholder="${I18n.t('login.passwordPlaceholder')}">
+                                        <span id="toggle-password" class="iconify password-toggle" data-icon="tabler:eye-off"></span>
+                                    </div>
                                 </div>
 
-                                <div class="form-checkbox-group">
-                                    <input type="checkbox" class="form-checkbox" id="remember-me">
-                                    <label class="form-checkbox-label" for="remember-me">
-                                        ${I18n.t('login.rememberMe')}
+                                <div class="form-toggle-row">
+                                    <label class="form-toggle" for="remember-me">
+                                        <input type="checkbox" class="form-toggle-input" id="remember-me" name="remember-me">
+                                        <span class="form-toggle-visual" aria-hidden="true">
+                                            <span class="form-toggle-knob"></span>
+                                        </span>
+                                        <span class="form-toggle-label">${I18n.t('login.rememberMe')}</span>
                                     </label>
+                                    <a href="#" class="form-link">${I18n.t('login.forgotPassword')}</a>
                                 </div>
 
-                                <a href="#" class="form-link">${I18n.t('login.forgotPassword')}</a>
-
-                                <button type="submit" class="btn-primary" style="margin-top: 20px;">
+                                <button type="submit" class="btn-primary" style="margin-top: 28px;">
                                     ${I18n.t('login.loginButton')}
                                 </button>
                             </form>
@@ -104,7 +111,7 @@ const ViewTemplates = {
                         <span class="iconify avatar-menu-icon" data-icon="tabler:mail"></span>
                         <span class="avatar-menu-text">${I18n.t('menu.contact')}</span>
                     </div>
-                    <div class="avatar-menu-item">
+                    <div class="avatar-menu-item" data-action="imprint">
                         <span class="iconify avatar-menu-icon" data-icon="tabler:info-circle"></span>
                         <span class="avatar-menu-text">${I18n.t('menu.imprint')}</span>
                     </div>
@@ -113,7 +120,7 @@ const ViewTemplates = {
 
             <div class="statusbar">
                 <div class="statusbar-left">
-                    <span>${I18n.t('statusbar.ready')}</span>
+                    <span>® 2026 SimpliMed GmbH</span>
                 </div>
                 <div class="statusbar-right">
                     <span>${I18n.t('statusbar.release')}: ${window.APP_VERSION || '1.0.0'}</span>
@@ -206,10 +213,13 @@ const ViewTemplates = {
                 </div>
 
                 <div class="titlebar-right">
-                    <div class="avatar" id="avatar">
-                        <svg class="avatar-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
+                    <div class="avatar-container" id="avatar">
+                        <div class="avatar">
+                            <svg class="avatar-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        <span class="iconify avatar-indicator" data-icon="tabler:chevron-down"></span>
                     </div>
                 </div>
             </div>
@@ -254,10 +264,6 @@ const ViewTemplates = {
                         <span class="iconify avatar-menu-icon" data-icon="tabler:help"></span>
                         <span class="avatar-menu-text">${I18n.t('menu.help')}</span>
                     </div>
-                    <div class="avatar-menu-item">
-                        <span class="iconify avatar-menu-icon" data-icon="tabler:mail"></span>
-                        <span class="avatar-menu-text">${I18n.t('menu.contact')}</span>
-                    </div>
                 </div>
 
                 <div class="avatar-menu-section">
@@ -269,7 +275,7 @@ const ViewTemplates = {
             </div>
 
             <div class="toolbar with-sidenav ${isSidenavCollapsed ? 'sidenav-collapsed' : ''}" id="toolbar">
-                <button class="btn-cta">
+                <button class="btn-cta context-accent">
                     <span id="cta-text">${I18n.t('buttons.new')}</span>
                 </button>
             </div>
@@ -378,5 +384,58 @@ const ViewTemplates = {
             { id: 'healthshop', name: I18n.t('modules.healthshop'), icon: 'tabler:shopping-bag' },
             { id: 'logout', name: I18n.t('menu.logout'), icon: 'tabler:door-exit' }
         ];
+    },
+
+    /**
+     * Liefert das Impressum-Popup-Markup
+     * @param {Object} imprintData
+     * @returns {string}
+     */
+    getImprintPopup(imprintData) {
+        return `
+            <div class="imprint-overlay" id="imprint-overlay">
+                <div class="imprint-popup">
+                    <div class="imprint-header">
+                        <h2 class="imprint-title">${imprintData.title}</h2>
+                        <button class="imprint-close" id="imprint-close" aria-label="Schließen">
+                            <span class="iconify imprint-close-icon" data-icon="tabler:x"></span>
+                        </button>
+                    </div>
+                    <div class="imprint-content">
+                        <h3 class="imprint-subtitle">${imprintData.subtitle}</h3>
+
+                        <div class="imprint-section">
+                            <p class="imprint-company-name">${imprintData.company.name}</p>
+                            <p class="imprint-text">${imprintData.company.address.street}</p>
+                            <p class="imprint-text">${imprintData.company.address.zipCode} ${imprintData.company.address.city}</p>
+                            <p class="imprint-text">${imprintData.company.address.country}</p>
+                        </div>
+
+                        <div class="imprint-divider"></div>
+
+                        <div class="imprint-section">
+                            <p class="imprint-text"><strong>Registergericht:</strong> ${imprintData.company.registration.court} ${imprintData.company.registration.number}</p>
+                            <p class="imprint-text"><strong>Geschäftsführer:</strong> ${imprintData.company.management}</p>
+                            <p class="imprint-text"><strong>Ust.-ID.-Nr:</strong> ${imprintData.company.vatId}</p>
+                        </div>
+
+                        <div class="imprint-divider"></div>
+
+                        <div class="imprint-section">
+                            <p class="imprint-text"><strong>Fon.:</strong> ${imprintData.company.contact.phone}</p>
+                            <p class="imprint-text"><strong>Fax.:</strong> ${imprintData.company.contact.fax}</p>
+                            <p class="imprint-text"><strong>E-Mail:</strong> ${imprintData.company.contact.email}</p>
+                        </div>
+
+                        <div class="imprint-divider"></div>
+
+                        <div class="imprint-section">
+                            <h4 class="imprint-section-title">${imprintData.disclaimer.title}</h4>
+                            <p class="imprint-text">${imprintData.disclaimer.text}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
     }
 };

@@ -5,7 +5,9 @@
     "login": {
         "title": "Inloggning",
         "username": "Användarnamn",
+        "usernamePlaceholder": "Ange användarnamn",
         "password": "Lösenord",
+        "passwordPlaceholder": "Ange lösenord",
         "rememberMe": "Förbli inloggad",
         "forgotPassword": "Glömt lösenord?",
         "loginButton": "Logga in",

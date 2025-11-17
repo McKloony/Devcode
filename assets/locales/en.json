@@ -5,7 +5,9 @@
     "login": {
         "title": "Login",
         "username": "Username",
+        "usernamePlaceholder": "Enter username",
         "password": "Password",
+        "passwordPlaceholder": "Enter password",
         "rememberMe": "Stay logged in",
         "forgotPassword": "Forgot password?",
         "loginButton": "Login",

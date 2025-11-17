@@ -7,6 +7,7 @@ const AuthManager = {
     STORAGE_KEY_USERTYPE: 'simplimed_usertype',
     STORAGE_KEY_USERNAME: 'simplimed_username',
     STORAGE_KEY_REMEMBER: 'simplimed_remember',
+    STORAGE_KEY_REMEMBER_CHOICE: 'simplimed_remember_choice',
     STORAGE_KEY_LAST_LOGIN_TYPE: 'simplimed_last_login_type',
 
     VALID_USERNAME: 'admin',
@@ -86,6 +87,26 @@ const AuthManager = {
             return JSON.parse(stored);
         }
         return null;
+    },
+
+    /**
+     * Speichert die Auswahl der Remember-Me-Option
+     * @param {boolean} remember
+     */
+    setRememberChoice(remember) {
+        localStorage.setItem(this.STORAGE_KEY_REMEMBER_CHOICE, remember ? 'true' : 'false');
+    },
+
+    /**
+     * Gibt die Remember-Me-Auswahl zurück
+     * @returns {boolean|null}
+     */
+    getRememberChoice() {
+        const stored = localStorage.getItem(this.STORAGE_KEY_REMEMBER_CHOICE);
+        if (stored === null) {
+            return null;
+        }
+        return stored === 'true';
     },
 
     /**

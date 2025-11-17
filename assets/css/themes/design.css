@@ -2,16 +2,58 @@
     --color-surface-primary: #EBF4F8;
     --color-surface-primary-variant: #F7FBFD;
     --color-surface-secondary: #FAFCFE;
+    --color-shell-surface: var(--color-surface-primary);
+    --color-titlebar-surface: #F9FCFE;
     --color-text-primary: #00253E;
     --color-text-secondary: #005085;
-    --color-interactive-cta: #0077BE;
-    --color-interactive-cta-hover: #1085cf;
-    --color-interactive-cta-text: #FFFFFF;
-    --color-interactive-active: #CDE0E8;
-    --color-interactive-hover: #DCEAF0;
+    /* Kontextfarbe des Design-Themes: CTA- und Auswahlzustände nur hier anpassen */
+    --color-context-background: #007BB4;
+    --color-context-foreground: #FFFFFF;
+    --color-interactive-cta: var(--color-context-background);
+    --color-interactive-cta-hover: #969696;
+    --color-interactive-cta-text: var(--color-context-foreground);
+    --color-interactive-active: var(--color-context-background);
+    --color-interactive-hover: #969696;
     --color-border: #BEE0F0;
-    --shadow-level1: 4px 0 16px -4px rgba(0, 119, 190, 0.1);
+    --shadow-level1: 4px 0 16px -4px rgba(0,0,0,0.1);
     --shadow-level2: 0 4px 6px -1px rgba(0, 119, 190, 0.2);
+    --color-input-surface: #F9FCFE;
+}
+
+/* Startscreen App-Container im Design-Theme angleichen */
+[data-theme="design"] .app-content:not(.with-toolbar) {
+    background-color: #EBF4F8;
+}
+
+/* SPA App-Container im Design-Theme auf Mittelwert setzen */
+[data-theme="design"] .app-content.with-toolbar {
+    background-color: #F9FCFE;
+}
+
+/* Login-Dialog im Design-Theme auf Variant-Farbton setzen */
+[data-theme="design"] .login-card {
+    background-color: #F9FCFE;
+}
+
+/* Linkfarben im Design Theme an Kontextakzent koppeln */
+[data-theme="design"] a,
+[data-theme="design"] .form-link,
+[data-theme="design"] .switch-login-type-link {
+    color: var(--color-context-background);
+}
+
+[data-theme="design"] a:hover,
+[data-theme="design"] .form-link:hover,
+[data-theme="design"] .switch-login-type-link:hover {
+    color: var(--color-interactive-hover);
+}
+
+/* Eingabefelder und Selects im Design-Theme vereinheitlichen */
+[data-theme="design"] .form-input,
+[data-theme="design"] select,
+[data-theme="design"] textarea {
+    background-color: var(--color-input-surface);
+    color: var(--color-text-primary);
 }
 
 /* Design theme specific error message styling */
@@ -19,4 +61,23 @@
     background-color: rgba(255, 87, 34, 0.08);
     color: #D84315;
     border: 1px solid rgba(255, 87, 34, 0.2);
+}
+
+/* Overflow-Selection im Design Theme an CTA-Akzent anpassen */
+[data-theme="design"] .bottom-nav-overflow-item.active {
+    background-color: var(--color-context-background);
+}
+
+[data-theme="design"] .bottom-nav-overflow-item.active .bottom-nav-overflow-item-text,
+[data-theme="design"] .bottom-nav-overflow-item.active .bottom-nav-overflow-item-icon {
+    color: var(--color-context-foreground);
+}
+
+/* Floating Action Button im Design Theme anpassen */
+[data-theme="design"] .fab {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="design"] .fab:active {
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.24);
 }

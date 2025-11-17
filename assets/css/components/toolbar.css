@@ -1,6 +1,6 @@
 .toolbar {
     height: 48px;
-    background-color: var(--color-surface-primary-variant);
+    background-color: var(--color-shell-surface, var(--color-surface-primary-variant));
     border-bottom: 1px solid var(--color-border);
     box-shadow: var(--shadow-level1);
     display: flex;
@@ -50,8 +50,8 @@
 .btn-cta {
     height: 40px;
     padding: 0 20px;
-    background-color: var(--color-interactive-cta);
-    color: var(--color-interactive-cta-text);
+    background-color: var(--color-context-background);
+    color: var(--color-context-foreground);
     border: none;
     border-radius: 6px;
     font-size: 15px;
@@ -61,7 +61,7 @@
     align-items: center;
     justify-content: center;
     width: 200px;
-    transition: background-color 200ms ease, filter 200ms ease;
+    transition: filter 200ms ease;
 }
 
 @media (max-width: 1023px) {
@@ -75,7 +75,7 @@
 }
 
 .btn-cta:active {
-    background-color: var(--color-interactive-cta);
+    background-color: var(--color-context-background);
     filter: brightness(1.1);
 }
 
@@ -102,7 +102,6 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background-color 200ms ease;
 }
 
 .toolbar-icon-button:hover {
@@ -129,7 +128,7 @@
         right: 0;
         height: 56px;
         padding: 8px 16px;
-        background-color: var(--color-surface-primary-variant);
+        background-color: var(--color-shell-surface, var(--color-surface-primary-variant));
         border-bottom: 1px solid var(--color-border);
         box-shadow: var(--shadow-level1);
         z-index: 89;
@@ -145,14 +144,14 @@
         border-radius: 4px;
         padding: 0 12px;
         height: 40px;
-        transition: border-color 200ms ease, background-color 200ms ease, box-shadow 200ms ease;
         -webkit-tap-highlight-color: transparent;
     }
 
     .mobile-toolbar-search:focus-within {
-        border-color: var(--color-interactive-cta);
+        outline: none;
+        border-color: #9CA3AF;
         background-color: var(--color-surface-secondary);
-        box-shadow: 0 0 0 1px var(--color-interactive-cta);
+        box-shadow: none;
     }
 
     .mobile-toolbar-search-icon {
@@ -162,11 +161,6 @@
         margin-right: 12px;
         flex-shrink: 0;
         pointer-events: none;
-        transition: color 200ms ease;
-    }
-
-    .mobile-toolbar-search:focus-within .mobile-toolbar-search-icon {
-        color: var(--color-interactive-cta);
     }
 
     .mobile-toolbar-search-input {
@@ -186,7 +180,7 @@
     }
 
     .mobile-toolbar-search-input::placeholder {
-        color: var(--color-text-secondary);
+        color: #9CA3AF;
     }
 
     /* Entfernt den blauen Fokus-Rahmen in Webkit-Browsern */
@@ -200,7 +194,6 @@
     .mobile-toolbar-search-input:-webkit-autofill:focus {
         -webkit-box-shadow: 0 0 0px 1000px var(--color-surface-secondary) inset;
         -webkit-text-fill-color: var(--color-text-primary);
-        transition: background-color 5000s ease-in-out 0s;
     }
 
     .mobile-search-clear-button {
@@ -218,7 +211,7 @@
         cursor: pointer;
         opacity: 0;
         pointer-events: none;
-        transition: opacity 150ms ease, color 150ms ease, background-color 150ms ease;
+        transition: opacity 150ms ease;
     }
 
     .mobile-search-clear-button .iconify {
@@ -256,8 +249,8 @@
         right: 16px;
         width: 56px;
         height: 56px;
-        background-color: var(--color-interactive-cta);
-        color: var(--color-interactive-cta-text);
+        background-color: var(--color-context-background);
+        color: var(--color-context-foreground);
         border-radius: 28px;
         align-items: center;
         justify-content: center;
@@ -278,7 +271,7 @@
     .fab-icon {
         width: 24px;
         height: 24px;
-        color: var(--color-interactive-cta-text);
+        color: var(--color-context-foreground);
     }
 
     .fab-text {

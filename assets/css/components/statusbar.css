@@ -1,6 +1,6 @@
 .statusbar {
     height: 28px;
-    background-color: var(--color-surface-primary);
+    background-color: var(--color-titlebar-surface, var(--color-surface-primary));
     border-top: 1px solid var(--color-border);
     position: fixed;
     bottom: 0;

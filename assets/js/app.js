@@ -77,6 +77,7 @@ const VersionManager = {
             'simplimed_theme',
             'simplimed_language',
             'simplimed_remember',
+            'simplimed_remember_choice',
             'simplimed_version'
         ];
 

@@ -49,7 +49,10 @@ const I18n = {
      */
     async loadTranslations(langCode) {
         try {
-            const response = await fetch(`assets/locales/${langCode}.json`);
+            const versionParam = window.APP_VERSION
+                ? `?v=${encodeURIComponent(window.APP_VERSION)}`
+                : `?t=${Date.now()}`;
+            const response = await fetch(`assets/locales/${langCode}.json${versionParam}`);
             this.translations = await response.json();
         } catch (error) {
             console.error(`Failed to load translations for ${langCode}`, error);

@@ -5,7 +5,9 @@
     "login": {
         "title": "Iniciar sesión",
         "username": "Nombre de usuario",
+        "usernamePlaceholder": "Introduce el nombre de usuario",
         "password": "Contraseña",
+        "passwordPlaceholder": "Introduce la contraseña",
         "rememberMe": "Mantenerme conectado",
         "forgotPassword": "¿Olvidó su contraseña?",
         "loginButton": "Iniciar sesión",

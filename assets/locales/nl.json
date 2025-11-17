@@ -5,7 +5,9 @@
     "login": {
         "title": "Inloggen",
         "username": "Gebruikersnaam",
+        "usernamePlaceholder": "Gebruikersnaam invoeren",
         "password": "Wachtwoord",
+        "passwordPlaceholder": "Wachtwoord invoeren",
         "rememberMe": "Ingelogd blijven",
         "forgotPassword": "Wachtwoord vergeten?",
         "loginButton": "Inloggen",

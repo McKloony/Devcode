@@ -5,7 +5,9 @@
     "login": {
         "title": "Connexion",
         "username": "Nom d'utilisateur",
+        "usernamePlaceholder": "Saisir le nom d'utilisateur",
         "password": "Mot de passe",
+        "passwordPlaceholder": "Saisir le mot de passe",
         "rememberMe": "Rester connecté",
         "forgotPassword": "Mot de passe oublié ?",
         "loginButton": "Se connecter",

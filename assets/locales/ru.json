@@ -5,7 +5,9 @@
     "login": {
         "title": "Вход",
         "username": "Имя пользователя",
+        "usernamePlaceholder": "Введите имя пользователя",
         "password": "Пароль",
+        "passwordPlaceholder": "Введите пароль",
         "rememberMe": "Оставаться в системе",
         "forgotPassword": "Забыли пароль?",
         "loginButton": "Войти",

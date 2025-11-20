@@ -153,19 +153,10 @@
 
 .bottom-nav-overflow-popup.show {
     display: block;
-    animation: slideUpFadeIn 200ms ease-out;
+    /* REMOVED: animation that was causing slide-up effect */
 }
 
-@keyframes slideUpFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(8px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+/* REMOVED: @keyframes slideUpFadeIn animation definition */
 
 .bottom-nav-overflow-item {
     display: flex;

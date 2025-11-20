@@ -1,6 +1,7 @@
 /**
- * Internationalisierung für SimpliMed
- * Unterstützt 9 Sprachen: de, en, fr, es, it, ru, uk, nl, sv
+ * SimpliMed Internationalization (i18n)
+ * Supports 9 languages: de, en, fr, es, it, ru, uk, nl, sv
+ * @version 1.1.4
  */
 
 const I18n = {
@@ -12,12 +13,12 @@ const I18n = {
     currentLanguage: '',
 
     /**
-     * Initialisiert das i18n-System
+     * Initializes the i18n system
      */
     async init() {
         this.currentLanguage = this.getLanguage();
         await this.loadTranslations(this.currentLanguage);
-        document.documentElement.setAttribute('lang', this.currentLanguage);
+        this.updateDocumentLanguage(this.currentLanguage);
     },
 
     /**
@@ -30,8 +31,8 @@ const I18n = {
     },
 
     /**
-     * Setzt die aktuelle Sprache
-     * @param {string} langCode - Sprachcode
+     * Sets the current language
+     * @param {string} langCode - Language code
      */
     async setLanguage(langCode) {
         if (!this.LANGUAGES.includes(langCode)) {
@@ -40,7 +41,21 @@ const I18n = {
         this.currentLanguage = langCode;
         localStorage.setItem(this.STORAGE_KEY, langCode);
         await this.loadTranslations(langCode);
-        document.documentElement.setAttribute('lang', langCode);
+        this.updateDocumentLanguage(langCode);
+    },
+
+    /**
+     * Updates the document language attribute
+     * @param {string} langCode - Language code
+     */
+    updateDocumentLanguage(langCode) {
+        const html = document.documentElement;
+        html.setAttribute('lang', langCode);
+        // Also update meta tags if needed
+        const metaLang = document.querySelector('meta[http-equiv="Content-Language"]');
+        if (metaLang) {
+            metaLang.setAttribute('content', langCode);
+        }
     },
 
     /**

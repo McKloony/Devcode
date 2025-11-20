@@ -1,11 +1,23 @@
 /**
- * HTML-Templates für SimpliMed Views
- * Trennen Markup von Router-Logik, um Debugging und Wartung zu erleichtern.
+ * SimpliMed View Templates
+ * Separates markup from router logic for easier debugging and maintenance
+ * @version 1.1.4
  */
 const ViewTemplates = {
     /**
-     * Liefert das Login-View-Markup
-     * @returns {string}
+     * Gets the current year for copyright notices
+     * @returns {number} Current year
+     */
+    getCurrentYear() {
+        return new Date().getFullYear();
+    },
+    // ========================================
+    // LOGIN VIEW
+    // ========================================
+
+    /**
+     * Renders the login view markup
+     * @returns {string} HTML template string
      */
     getLoginView() {
         return `
@@ -120,7 +132,7 @@ const ViewTemplates = {
 
             <div class="statusbar">
                 <div class="statusbar-left">
-                    <span>® 2026 SimpliMed GmbH</span>
+                    <span>© ${this.getCurrentYear()} SimpliMed GmbH</span>
                 </div>
                 <div class="statusbar-right">
                     <span>${I18n.t('statusbar.release')}: ${window.APP_VERSION || '1.0.0'}</span>
@@ -129,10 +141,14 @@ const ViewTemplates = {
         `;
     },
 
+    // ========================================
+    // DASHBOARD VIEW
+    // ========================================
+
     /**
-     * Liefert das Dashboard-View-Markup
-     * @param {string} userType
-     * @returns {string}
+     * Renders the dashboard view markup
+     * @param {string} userType - Either 'patient' or 'therapist'
+     * @returns {string} HTML template string
      */
     getDashboardView(userType) {
         const modules = userType === 'therapist' ? this.getTherapistModules() : this.getPatientModules();
@@ -170,7 +186,7 @@ const ViewTemplates = {
                         </div>
                     `).join('')}
 
-                    <div class="sidenav-spacer"></div>
+                    <div class="sidenav-divider" aria-hidden="true"></div>
 
                     <div class="sidenav-item" data-module="${logoutModule.id}">
                         <span class="iconify sidenav-item-icon" data-icon="${logoutModule.icon}"></span>
@@ -184,14 +200,13 @@ const ViewTemplates = {
             </div>
 
             <div class="titlebar with-sidenav ${isSidenavCollapsed ? 'sidenav-collapsed' : ''}" id="titlebar">
-                <div class="titlebar-logo-container logged-in">
+                <div class="titlebar-logo-container mobile-only">
                     <img
                         src="assets/images/logos/logo_simplimed_fullsize.svg"
                         alt="SimpliMed"
                         class="titlebar-logo"
                     >
                 </div>
-
                 <div class="titlebar-search">
                     <div class="search-input-container">
                         <span class="iconify search-icon" data-icon="tabler:search"></span>
@@ -276,7 +291,7 @@ const ViewTemplates = {
 
             <div class="toolbar with-sidenav ${isSidenavCollapsed ? 'sidenav-collapsed' : ''}" id="toolbar">
                 <button class="btn-cta context-accent">
-                    <span id="cta-text">${I18n.t('buttons.new')}</span>
+                    <span id="cta-text">${I18n.t('buttons.addWidget')}</span>
                 </button>
             </div>
 
@@ -352,9 +367,13 @@ const ViewTemplates = {
         `;
     },
 
+    // ========================================
+    // MODULE CONFIGURATIONS
+    // ========================================
+
     /**
-     * Module für Patientenansicht
-     * @returns {Array<{id:string,name:string,icon:string}>}
+     * Gets patient-specific modules
+     * @returns {Array<{id:string, name:string, icon:string}>} Module configuration array
      */
     getPatientModules() {
         return [
@@ -369,8 +388,8 @@ const ViewTemplates = {
     },
 
     /**
-     * Module für Therapeutenansicht
-     * @returns {Array<{id:string,name:string,icon:string}>}
+     * Gets therapist-specific modules
+     * @returns {Array<{id:string, name:string, icon:string}>} Module configuration array
      */
     getTherapistModules() {
         return [
@@ -386,10 +405,14 @@ const ViewTemplates = {
         ];
     },
 
+    // ========================================
+    // IMPRINT POPUP
+    // ========================================
+
     /**
-     * Liefert das Impressum-Popup-Markup
-     * @param {Object} imprintData
-     * @returns {string}
+     * Renders the imprint popup markup
+     * @param {Object} imprintData - Imprint data from JSON
+     * @returns {string} HTML template string
      */
     getImprintPopup(imprintData) {
         return `

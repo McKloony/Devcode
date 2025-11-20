@@ -1,44 +1,82 @@
 /**
- * Einfacher Router für SimpliMed
+ * Optimized Router für SimpliMed
+ * - Split large functions
+ * - Fixed memory leaks
+ * - Better error handling
  */
 
 const Router = {
     currentView: 'login',
-    _autoLoginAttempted: false,
+    currentModule: 'dashboard',
+    _initialized: false,
+    _eventHandlers: new Map(),
+    _resizeRafId: null,
+    _resizeObserver: null,
+    _pendingNavLayout: false,
+    _pendingToggleLayout: false,
+    _supportsFinePointer: window.matchMedia
+        ? window.matchMedia('(hover: hover) and (pointer: fine)').matches
+        : false,
+    _pointerMoveHandler: null,
+    _pointerMoveRafId: null,
+
+    // Constants
+    ANIMATION_DURATION: 250,
+    SIDENAV_WIDTH_EXPANDED: 230,
+    SIDENAV_WIDTH_COLLAPSED: 64,
+    BOTTOM_NAV_ITEM_WIDTH: 92,
+    MIN_VISIBLE_BOTTOM_NAV_ITEMS: 2,
 
     /**
-     * Navigiert zu einer View
-     * @param {string} viewName - Name der View
+     * Initializes the router
      */
-    navigate(viewName) {
+    init() {
+        if (this._initialized) return;
+        this._initialized = true;
+
+        // Initial render
+        this.render();
+
+        // Start time updates
+        setInterval(() => this.updateTime(), 1000);
+        this.updateTime();
+    },
+
+    /**
+     * Navigates to a view
+     * @param {string} viewName - Name of the view
+     * @param {string} module - Optional module name
+     */
+    navigate(viewName, module = 'dashboard') {
         this.currentView = viewName;
+        this.currentModule = module;
         this.render();
     },
 
     /**
-     * Rendert die aktuelle View
+     * Renders the current view
      */
     render() {
         const app = document.getElementById('app');
+        if (!app) return;
+
+        // Clean up previous event handlers
+        this.cleanup();
 
         if (!AuthManager.isLoggedIn()) {
-            if (!this._autoLoginAttempted) {
-                this._autoLoginAttempted = true;
+            // Try to restore session from remember token
+            if (!this._sessionRestoreAttempted) {
+                this._sessionRestoreAttempted = true;
+                const hasRememberToken = AuthManager.hasRememberToken();
                 const rememberChoice = AuthManager.getRememberChoice();
-                const rememberedUser = AuthManager.getRememberedUser();
 
-                if (rememberChoice === true && rememberedUser) {
-                    const userType = AuthManager.getLastLoginType();
-                    const success = AuthManager.login(
-                        rememberedUser.username,
-                        rememberedUser.password,
-                        userType,
-                        true
-                    );
-
+                if (rememberChoice === true && hasRememberToken) {
+                    const success = AuthManager.restoreSession();
                     if (success) {
+                        const userType = AuthManager.getUserType();
                         app.innerHTML = ViewTemplates.getDashboardView(userType);
                         this.attachDashboardEventListeners(userType);
+                        this.currentView = 'dashboard';
                         return;
                     }
                 }
@@ -46,271 +84,679 @@ const Router = {
 
             app.innerHTML = ViewTemplates.getLoginView();
             this.attachLoginEventListeners();
+            this.currentView = 'login';
         } else {
             const userType = AuthManager.getUserType();
             app.innerHTML = ViewTemplates.getDashboardView(userType);
             this.attachDashboardEventListeners(userType);
+            this.currentView = 'dashboard';
         }
     },
 
     /**
-     * Fügt Event-Listener für Login hinzu
+     * Cleanup event handlers to prevent memory leaks
+     */
+    cleanup() {
+        // Remove resize handler
+        if (this._resizeHandler) {
+            window.removeEventListener('resize', this._resizeHandler);
+            this._resizeHandler = null;
+        }
+
+        // Cancel any pending animation frames
+        if (this._resizeRafId) {
+            cancelAnimationFrame(this._resizeRafId);
+            this._resizeRafId = null;
+        }
+
+        // Disconnect resize observer
+        if (this._resizeObserver) {
+            this._resizeObserver.disconnect();
+            this._resizeObserver = null;
+        }
+
+        // Remove throttled pointer guard
+        if (this._pointerMoveHandler) {
+            document.removeEventListener('pointermove', this._pointerMoveHandler);
+            this._pointerMoveHandler = null;
+        }
+
+        if (this._pointerMoveRafId) {
+            cancelAnimationFrame(this._pointerMoveRafId);
+            this._pointerMoveRafId = null;
+        }
+
+        this._pendingNavLayout = false;
+        this._pendingToggleLayout = false;
+
+        // Remove document click handlers
+        if (this._avatarOutsideHandler) {
+            document.removeEventListener('click', this._avatarOutsideHandler);
+            this._avatarOutsideHandler = null;
+        }
+
+        if (this._overflowOutsideHandler) {
+            document.removeEventListener('click', this._overflowOutsideHandler);
+            this._overflowOutsideHandler = null;
+        }
+
+        // Clear all stored event handlers
+        this._eventHandlers.clear();
+    },
+
+    /**
+     * Attaches event listeners for login view
      */
     attachLoginEventListeners() {
-        // Wiederherstellen des zuletzt verwendeten Login-Typs
+        const elements = this.getLoginElements();
+        if (!elements) return;
+
+        // Restore last used login type
         let selectedUserType = AuthManager.getLastLoginType();
+        this.updateLoginTypeUI(selectedUserType, elements);
 
-        // UI entsprechend dem gespeicherten Login-Typ initialisieren
-        const titleEl = document.getElementById('login-type-title');
-        const linkEl = document.getElementById('switch-login-type');
-        if (selectedUserType === 'therapist') {
-            titleEl.textContent = I18n.t('login.therapistLogin');
-            linkEl.textContent = I18n.t('login.switchToPatient');
+        // Restore remembered username if available
+        const rememberedUsername = AuthManager.getRememberedUsername();
+        if (rememberedUsername && elements.username) {
+            elements.username.value = rememberedUsername;
+        }
+
+        // Setup remember me checkbox
+        this.setupRememberMeCheckbox(elements);
+
+        // Setup login type switcher
+        this.setupLoginTypeSwitcher(elements, selectedUserType);
+
+        // Setup login form
+        this.setupLoginForm(elements);
+
+        // Setup password toggle
+        this.setupPasswordToggle();
+
+        // Setup avatar menu (for theme switching on login page)
+        this.attachAvatarMenuListeners();
+    },
+
+    /**
+     * Get login page elements
+     */
+    getLoginElements() {
+        return {
+            title: document.getElementById('login-type-title'),
+            link: document.getElementById('switch-login-type'),
+            username: document.getElementById('username'),
+            password: document.getElementById('password'),
+            rememberMe: document.getElementById('remember-me'),
+            form: document.getElementById('login-form'),
+            error: document.getElementById('error-message')
+        };
+    },
+
+    /**
+     * Updates login type UI
+     */
+    updateLoginTypeUI(userType, elements) {
+        if (!elements.title || !elements.link) return;
+
+        if (userType === 'therapist') {
+            elements.title.textContent = I18n.t('login.therapistLogin');
+            elements.link.textContent = I18n.t('login.switchToPatient');
         } else {
-            titleEl.textContent = I18n.t('login.patientLogin');
-            linkEl.textContent = I18n.t('login.switchToTherapist');
+            elements.title.textContent = I18n.t('login.patientLogin');
+            elements.link.textContent = I18n.t('login.switchToTherapist');
+        }
+    },
+
+    /**
+     * Setup remember me checkbox
+     */
+    setupRememberMeCheckbox(elements) {
+        if (!elements.rememberMe) return;
+
+        const storedChoice = AuthManager.getRememberChoice();
+        const hasRememberToken = AuthManager.hasRememberToken();
+
+        if (storedChoice !== null) {
+            elements.rememberMe.checked = storedChoice;
+        } else if (hasRememberToken) {
+            elements.rememberMe.checked = true;
         }
 
-        // Benutzernamen und Passwort aus dem Local Storage abrufen
-        const rememberedUser = AuthManager.getRememberedUser();
-        if (rememberedUser) {
-            document.getElementById('username').value = rememberedUser.username;
-            document.getElementById('password').value = rememberedUser.password;
-        }
-
-        const rememberMeInput = document.getElementById('remember-me');
-        const storedRememberChoice = AuthManager.getRememberChoice();
-        if (storedRememberChoice !== null) {
-            rememberMeInput.checked = storedRememberChoice;
-        } else if (rememberedUser) {
-            rememberMeInput.checked = true;
-        }
-
-        rememberMeInput.addEventListener('change', (event) => {
-            AuthManager.setRememberChoice(event.target.checked);
+        elements.rememberMe.addEventListener('change', (e) => {
+            AuthManager.setRememberChoice(e.target.checked);
         });
+    },
 
-        // Switch Login Type Link
-        document.getElementById('switch-login-type').addEventListener('click', (e) => {
+    /**
+     * Setup login type switcher
+     */
+    setupLoginTypeSwitcher(elements, selectedUserType) {
+        if (!elements.link) return;
+
+        const handler = (e) => {
             e.preventDefault();
-            const titleEl = document.getElementById('login-type-title');
-            const linkEl = document.getElementById('switch-login-type');
-
-            if (selectedUserType === 'patient') {
-                selectedUserType = 'therapist';
-                titleEl.textContent = I18n.t('login.therapistLogin');
-                linkEl.textContent = I18n.t('login.switchToPatient');
-            } else {
-                selectedUserType = 'patient';
-                titleEl.textContent = I18n.t('login.patientLogin');
-                linkEl.textContent = I18n.t('login.switchToTherapist');
-            }
-
-            // Login-Typ für zukünftige Besuche speichern
+            selectedUserType = selectedUserType === 'patient' ? 'therapist' : 'patient';
+            this.updateLoginTypeUI(selectedUserType, elements);
             AuthManager.setLastLoginType(selectedUserType);
-        });
+        };
 
-        // Login-Form
-        document.getElementById('login-form').addEventListener('submit', (e) => {
+        elements.link.addEventListener('click', handler);
+        this._eventHandlers.set('loginTypeSwitch', handler);
+    },
+
+    /**
+     * Setup login form submission
+     */
+    setupLoginForm(elements) {
+        if (!elements.form) return;
+
+        const handler = (e) => {
             e.preventDefault();
 
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const rememberMe = document.getElementById('remember-me').checked;
+            const username = elements.username.value.trim();
+            const password = elements.password.value.trim();
+            const rememberMe = elements.rememberMe.checked;
 
-            const success = AuthManager.login(username, password, selectedUserType, rememberMe);
+            const userType = AuthManager.getLastLoginType();
+            const success = AuthManager.login(username, password, userType, rememberMe);
 
             if (success) {
                 requestAnimationFrame(() => this.navigate('dashboard'));
             } else {
-                const errorMsg = document.getElementById('error-message');
-                errorMsg.textContent = I18n.t('login.errorInvalidCredentials');
-                errorMsg.style.display = 'block';
+                if (elements.error) {
+                    elements.error.textContent = I18n.t('login.errorInvalidCredentials');
+                    elements.error.style.display = 'block';
+                }
             }
+        };
+
+        elements.form.addEventListener('submit', handler);
+        this._eventHandlers.set('loginForm', handler);
+    },
+
+    /**
+     * Setup password visibility toggle
+     */
+    setupPasswordToggle() {
+        const passwordGroup = document.getElementById('password-group');
+        if (!passwordGroup) return;
+
+        const handler = (e) => {
+            const toggleElement = e.target.closest('#toggle-password');
+            if (!toggleElement && e.target.id !== 'toggle-password') return;
+
+            const passwordInput = document.getElementById('password');
+            const togglePassword = document.getElementById('toggle-password');
+
+            if (passwordInput && togglePassword) {
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    togglePassword.setAttribute('data-icon', 'tabler:eye');
+                } else {
+                    passwordInput.type = 'password';
+                    togglePassword.setAttribute('data-icon', 'tabler:eye-off');
+                }
+            }
+        };
+
+        passwordGroup.addEventListener('click', handler);
+        this._eventHandlers.set('passwordToggle', handler);
+    },
+
+    /**
+     * Attaches event listeners for dashboard view
+     */
+    attachDashboardEventListeners(userType) {
+        // Setup sidenav
+        this.setupSidenav();
+
+        // Setup navigation
+        this.setupNavigation();
+
+        // Setup bottom navigation
+        this.setupBottomNavigation();
+
+        // Setup search functionality
+        this.setupSearch();
+
+        // Setup avatar menu
+        this.attachAvatarMenuListeners();
+
+        // Setup pointer guard (nur bei Trackpad/Fine Pointer)
+        this.setupPointerGuards();
+
+        // Initial updates
+        this.updateStatusBar('dashboard');
+        this.updateSearchUI('dashboard');
+        this.scheduleLayoutUpdate({ nav: true, toggle: true });
+
+        // Setup resize tracking
+        this.setupResizeHandler();
+        this.setupResizeObserver();
+    },
+
+    /**
+     * Setup sidenav functionality
+     */
+    setupSidenav() {
+        const sidenav = document.getElementById('sidenav');
+        const toggle = document.getElementById('sidenav-toggle');
+        const titlebar = document.getElementById('titlebar');
+        const appContent = document.getElementById('app-content');
+        const toolbar = document.getElementById('toolbar');
+        const logo = document.getElementById('sidenav-logo');
+
+        if (!sidenav || !toggle) return;
+
+        this.scheduleLayoutUpdate({ toggle: true });
+
+        // Restore collapsed state
+        const savedState = localStorage.getItem('simplimed_sidenav_collapsed');
+        if (savedState === 'true') {
+            sidenav.classList.add('collapsed');
+            titlebar?.classList.add('sidenav-collapsed');
+            toolbar?.classList.add('sidenav-collapsed');
+            if (appContent) {
+                appContent.style.marginLeft = `${this.SIDENAV_WIDTH_COLLAPSED}px`;
+            }
+        }
+
+        // Toggle handler
+        toggle.addEventListener('click', () => {
+            sidenav.classList.add('animating');
+            const isCollapsed = sidenav.classList.toggle('collapsed');
+
+            titlebar?.classList.toggle('sidenav-collapsed', isCollapsed);
+            toolbar?.classList.toggle('sidenav-collapsed', isCollapsed);
+
+            if (appContent) {
+                appContent.style.marginLeft = isCollapsed
+                    ? `${this.SIDENAV_WIDTH_COLLAPSED}px`
+                    : `${this.SIDENAV_WIDTH_EXPANDED}px`;
+            }
+
+            setTimeout(() => {
+                sidenav.classList.remove('animating');
+            }, this.ANIMATION_DURATION);
+
+            localStorage.setItem('simplimed_sidenav_collapsed', isCollapsed.toString());
+
+            this.scheduleLayoutUpdate({ nav: true, toggle: true });
         });
 
-        // Passwort-Toggler
-        // Event-Delegation verwenden, um Klicks auf Iconify-SVG-Elemente zu erfassen
-        const passwordGroup = document.getElementById('password-group');
-        if (passwordGroup) {
-            passwordGroup.addEventListener('click', (e) => {
-                // Prüfen ob das geklickte Element das toggle-password Element ist
-                // oder innerhalb davon liegt (für Iconify SVG-Elemente)
-                const toggleElement = e.target.closest('#toggle-password');
-                if (toggleElement || e.target.id === 'toggle-password') {
-                    const passwordInput = document.getElementById('password');
-                    const togglePassword = document.getElementById('toggle-password');
-                    if (passwordInput && togglePassword) {
-                        if (passwordInput.type === 'password') {
-                            passwordInput.type = 'text';
-                            togglePassword.setAttribute('data-icon', 'tabler:eye');
-                        } else {
-                            passwordInput.type = 'password';
-                            togglePassword.setAttribute('data-icon', 'tabler:eye-off');
-                        }
-                    }
+        // Logo click handler
+        if (logo) {
+            logo.addEventListener('click', () => {
+                this.navigate('dashboard', 'dashboard');
+            });
+        }
+    },
+
+    /**
+     * Positioniert den Sidenav-Toggle abhängig vom Benutzertyp
+     */
+    positionSidenavToggle() {
+        const sidenav = document.getElementById('sidenav');
+        const toggle = document.getElementById('sidenav-toggle');
+        if (!sidenav || !toggle) return;
+
+        const userType = AuthManager.getUserType() || AuthManager.getLastLoginType();
+        const targetModule = userType === 'therapist' ? 'payments' : 'healthshop';
+        const targetItem = document.querySelector(`.sidenav-item[data-module="${targetModule}"]`);
+        if (!targetItem) return;
+
+        const sidenavRect = sidenav.getBoundingClientRect();
+        const targetRect = targetItem.getBoundingClientRect();
+        const targetCenter = (targetRect.top - sidenavRect.top) + (targetRect.height / 2);
+
+        toggle.style.top = `${targetCenter}px`;
+    },
+
+    /**
+     * Setup main navigation
+     */
+    setupNavigation() {
+        const navItems = document.querySelectorAll('.sidenav-item');
+
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const moduleId = item.getAttribute('data-module');
+
+                if (moduleId === 'logout') {
+                    AuthManager.logout();
+                    this.navigate('login');
+                } else {
+                    // Update active states
+                    navItems.forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+
+                    // Sync with bottom nav
+                    this.syncBottomNavActive(moduleId);
+
+                    // Handle navigation
+                    const moduleName = item.querySelector('.sidenav-item-text')?.textContent || moduleId;
+                    this.handleModuleNavigation(moduleId, moduleName);
+                }
+            });
+        });
+    },
+
+    /**
+     * Setup bottom navigation
+     */
+    setupBottomNavigation() {
+        const bottomItems = document.querySelectorAll('.bottom-nav-item:not(.overflow-menu)');
+        const overflowButton = document.getElementById('bottom-nav-overflow');
+        const overflowPopup = document.getElementById('bottom-nav-overflow-popup');
+
+        // Regular items
+        bottomItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const moduleId = item.getAttribute('data-module');
+
+                // Update active states
+                bottomItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+
+                // Sync with sidenav
+                this.syncSidenavActive(moduleId);
+
+                // Handle navigation
+                const moduleName = item.querySelector('.bottom-nav-item-text')?.textContent || moduleId;
+                this.handleModuleNavigation(moduleId, moduleName);
+
+                // Update overflow menu
+                this.updateBottomNavigation();
+            });
+        });
+
+        // Overflow menu
+        if (overflowButton && overflowPopup) {
+            // Toggle overflow menu
+            overflowButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                overflowPopup.classList.toggle('show');
+            });
+
+            // Close on outside click
+            this._overflowOutsideHandler = (e) => {
+                if (!overflowPopup.contains(e.target) &&
+                    !overflowButton.contains(e.target)) {
+                    overflowPopup.classList.remove('show');
+                }
+            };
+            document.addEventListener('click', this._overflowOutsideHandler);
+
+            // Handle overflow item clicks
+            overflowPopup.addEventListener('click', (e) => {
+                const item = e.target.closest('.bottom-nav-overflow-item');
+                if (!item) return;
+
+                const moduleId = item.dataset.module;
+                overflowPopup.classList.remove('show');
+
+                // Update active states
+                bottomItems.forEach(i => i.classList.remove('active'));
+                const matchingItem = Array.from(bottomItems)
+                    .find(i => i.dataset.module === moduleId);
+                if (matchingItem) {
+                    matchingItem.classList.add('active');
+                }
+
+                // Sync with sidenav
+                this.syncSidenavActive(moduleId);
+
+                // Handle navigation
+                const moduleName = item.querySelector('.bottom-nav-overflow-item-text')?.textContent || moduleId;
+                this.handleModuleNavigation(moduleId, moduleName);
+
+                // Update overflow menu
+                this.updateBottomNavigation();
+            });
+        }
+    },
+
+    /**
+     * Syncs sidenav active state
+     */
+    syncSidenavActive(moduleId) {
+        const navItems = document.querySelectorAll('.sidenav-item');
+        navItems.forEach(item => {
+            item.classList.toggle('active', item.getAttribute('data-module') === moduleId);
+        });
+    },
+
+    /**
+     * Syncs bottom nav active state
+     */
+    syncBottomNavActive(moduleId) {
+        const bottomItems = document.querySelectorAll('.bottom-nav-item:not(.overflow-menu)');
+        bottomItems.forEach(item => {
+            item.classList.toggle('active', item.getAttribute('data-module') === moduleId);
+        });
+    },
+
+    /**
+     * Setup search functionality
+     */
+    setupSearch() {
+        const searchInput = document.getElementById('search-input');
+        const mobileSearchInput = document.getElementById('mobile-search-input');
+        const searchClear = document.getElementById('search-clear-button');
+        const mobileClear = document.getElementById('mobile-search-clear');
+
+        const updateClearButtons = () => {
+            if (searchClear) {
+                searchClear.classList.toggle('is-visible',
+                    searchInput && searchInput.value.trim().length > 0);
+            }
+            if (mobileClear) {
+                mobileClear.classList.toggle('is-visible',
+                    mobileSearchInput && mobileSearchInput.value.trim().length > 0);
+            }
+        };
+
+        const clearAll = () => {
+            if (searchInput) searchInput.value = '';
+            if (mobileSearchInput) mobileSearchInput.value = '';
+            updateClearButtons();
+        };
+
+        // Sync search inputs
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                if (mobileSearchInput) mobileSearchInput.value = e.target.value;
+                updateClearButtons();
+            });
+
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && this.currentModule === 'dashboard') {
+                    e.preventDefault();
+                    clearAll();
                 }
             });
         }
 
-        this.attachAvatarMenuListeners();
-    },
-    /**
-     * Aktualisiert die Statusleiste mit dem aktuellen Modulnamen
-     * @param {string} moduleId - ID des aktuellen Moduls
-     */
-    updateStatusBar(moduleId) {
-        const statusbarModule = document.getElementById('statusbar-module');
-        const statusbarUser = document.getElementById('statusbar-user');
+        if (mobileSearchInput) {
+            mobileSearchInput.addEventListener('input', (e) => {
+                if (searchInput) searchInput.value = e.target.value;
+                updateClearButtons();
+            });
 
-        if (statusbarModule && moduleId) {
-            const moduleName = I18n.t(`modules.${moduleId}`);
-            statusbarModule.textContent = moduleName;
+            mobileSearchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && this.currentModule === 'dashboard') {
+                    e.preventDefault();
+                    clearAll();
+                }
+            });
         }
 
-        if (statusbarUser) {
-            const username = AuthManager.getUsername() || 'N/A';
-            statusbarUser.textContent = username;
+        // Clear buttons
+        if (searchClear) {
+            searchClear.addEventListener('click', () => {
+                clearAll();
+                searchInput?.focus();
+            });
         }
+
+        if (mobileClear) {
+            mobileClear.addEventListener('click', () => {
+                clearAll();
+                mobileSearchInput?.focus();
+            });
+        }
+
+        updateClearButtons();
     },
 
     /**
-     * Berechnet und aktualisiert die Bottom Navigation Items basierend auf verfügbarem Platz
+     * Schedules Layout-Updates über requestAnimationFrame, um Reflow-Schleifen zu vermeiden
+     * @param {Object} options - Flags für die benötigten Updates
+     * @param {boolean} options.nav - Bottom Navigation neu berechnen
+     * @param {boolean} options.toggle - Position des Sidenav-Toggles aktualisieren
      */
-    updateBottomNavigation() {
-        const bottomNav = document.getElementById('bottom-navigation');
-        if (!bottomNav) return;
+    scheduleLayoutUpdate({ nav = false, toggle = false } = {}) {
+        if (!nav && !toggle) return;
 
-        const allItems = Array.from(bottomNav.querySelectorAll('.bottom-nav-item:not(.overflow-menu)'));
-        const overflowButton = document.getElementById('bottom-nav-overflow');
-        const overflowPopup = document.getElementById('bottom-nav-overflow-popup');
+        this._pendingNavLayout = this._pendingNavLayout || nav;
+        this._pendingToggleLayout = this._pendingToggleLayout || toggle;
 
-        if (allItems.length === 0) return;
+        if (this._resizeRafId) return;
 
-        const markNavigationReady = () => {
-            if (!bottomNav.classList.contains('is-ready')) {
-                bottomNav.classList.add('is-ready');
+        this._resizeRafId = requestAnimationFrame(() => {
+            this._resizeRafId = null;
+
+            if (this._pendingNavLayout) {
+                this._pendingNavLayout = false;
+                this.applyBottomNavigationLayout();
             }
+
+            if (this._pendingToggleLayout) {
+                this._pendingToggleLayout = false;
+                this.positionSidenavToggle();
+            }
+        });
+    },
+
+    /**
+     * Setup pointer guards für Geräte mit feinem Pointer
+     * Verhindert, dass pointermove-Handler bei 120 Hz laufen
+     */
+    setupPointerGuards() {
+        if (!this._supportsFinePointer || this._pointerMoveHandler) return;
+
+        const throttledPointerMove = () => {
+            if (this._pointerMoveRafId) return;
+
+            this._pointerMoveRafId = requestAnimationFrame(() => {
+                this._pointerMoveRafId = null;
+                if (this._pointerMoveHandler) {
+                    document.removeEventListener('pointermove', this._pointerMoveHandler);
+                    this._pointerMoveHandler = null;
+                }
+            });
         };
 
-        // Breite der Bottom Navigation
-        const containerWidth = bottomNav.offsetWidth;
-
-        // Feste Breite pro Item (92px: 90px CSS-Breite + 2px Sicherheitspuffer für Abstände)
-        const itemWidth = 92;
-
-        // Berechne wie viele Items maximal passen
-        let maxVisibleItems = Math.floor(containerWidth / itemWidth);
-
-        // Wenn alle Items passen (ohne Overflow-Button)
-        if (allItems.length <= maxVisibleItems) {
-            allItems.forEach(item => item.style.display = 'flex');
-            overflowButton.classList.remove('visible');
-            overflowButton.style.display = 'none';
-            overflowPopup.innerHTML = '';
-            markNavigationReady();
-            return;
-        }
-
-        // Andernfalls: zeige maxVisibleItems-1 Items + Overflow-Button
-        // Mindestens 3 Items + Overflow
-        const visibleCount = Math.max(2, maxVisibleItems - 1);
-        const visibleItems = allItems.slice(0, visibleCount);
-        const hiddenItems = allItems.slice(visibleCount);
-
-        // Wenn es versteckte Items gibt
-        if (hiddenItems.length > 0) {
-            // Sichtbare Items anzeigen
-            visibleItems.forEach(item => item.style.display = 'flex');
-
-            // Versteckte Items ausblenden
-            hiddenItems.forEach(item => item.style.display = 'none');
-
-            // Overflow-Button anzeigen
-            overflowButton.classList.add('visible');
-            overflowButton.style.display = 'flex';
-
-            // Overflow-Popup mit versteckten Items füllen
-            const activeModule = document.querySelector('.bottom-nav-item.active') ||
-                               document.querySelector('.bottom-nav-overflow-item.active');
-            const activeModuleId = activeModule ? activeModule.dataset.module : null;
-
-            overflowPopup.innerHTML = hiddenItems.map(item => {
-                const moduleId = item.dataset.module;
-                const icon = item.querySelector('.bottom-nav-item-icon').getAttribute('data-icon');
-                const text = item.querySelector('.bottom-nav-item-text').textContent;
-                const isActive = moduleId === activeModuleId;
-
-                return `
-                    <div class="bottom-nav-overflow-item ${isActive ? 'active' : ''}" data-module="${moduleId}">
-                        <span class="iconify bottom-nav-overflow-item-icon" data-icon="${icon}"></span>
-                        <span class="bottom-nav-overflow-item-text">${text}</span>
-                    </div>
-                `;
-            }).join('');
-        } else {
-            // Alle Items anzeigen, Overflow verstecken
-            allItems.forEach(item => item.style.display = 'flex');
-            overflowButton.classList.remove('visible');
-            overflowButton.style.display = 'none';
-            overflowPopup.innerHTML = '';
-        }
-
-        markNavigationReady();
+        this._pointerMoveHandler = throttledPointerMove;
+        document.addEventListener('pointermove', throttledPointerMove, { passive: true });
     },
 
     /**
-     * Fügt Event-Listener für Dashboard hinzu
-     * @param {string} userType
+     * Setup resize handler with proper cleanup
+     */
+    setupResizeHandler() {
+        const handleResize = () => {
+            this.scheduleLayoutUpdate({ nav: true, toggle: true });
+        };
+
+        this._resizeHandler = handleResize;
+        window.addEventListener('resize', handleResize);
+    },
+
+    /**
+     * Beobachtet kritische Layout-Container per ResizeObserver (Callback via rAF)
+     */
+    setupResizeObserver() {
+        if (typeof ResizeObserver === 'undefined') return;
+
+        const targets = [];
+        const bottomNav = document.getElementById('bottom-navigation');
+        const appContent = document.getElementById('app-content');
+
+        if (bottomNav) targets.push(bottomNav);
+        if (appContent) targets.push(appContent);
+
+        if (targets.length === 0) return;
+
+        if (this._resizeObserver) {
+            this._resizeObserver.disconnect();
+        }
+
+        this._resizeObserver = new ResizeObserver(() => {
+            this.scheduleLayoutUpdate({ nav: true, toggle: true });
+        });
+
+        targets.forEach(target => this._resizeObserver.observe(target));
+    },
+
+    /**
+     * Updates status bar
+     */
+    updateStatusBar(moduleId) {
+        const moduleEl = document.getElementById('statusbar-module');
+        const userEl = document.getElementById('statusbar-user');
+
+        if (moduleEl && moduleId) {
+            moduleEl.textContent = I18n.t(`modules.${moduleId}`);
+        }
+
+        if (userEl) {
+            userEl.textContent = AuthManager.getUsername() || 'N/A';
+        }
+    },
+
+    /**
+     * Updates search UI based on current module
      */
     updateSearchUI(moduleId) {
         const searchIcon = document.querySelector('.search-icon');
         const searchInput = document.getElementById('search-input');
-        const mobileSearchIcon = document.getElementById('mobile-search-icon');
-        const mobileSearchInput = document.getElementById('mobile-search-input');
+        const mobileIcon = document.getElementById('mobile-search-icon');
+        const mobileInput = document.getElementById('mobile-search-input');
 
-        // Desktop Suchleiste
-        if (searchIcon && searchInput) {
-            if (moduleId === 'dashboard') {
-                searchIcon.setAttribute('data-icon', 'tabler:bolt');
-                searchInput.placeholder = I18n.t('search.actionOrCommand');
-            } else {
-                searchIcon.setAttribute('data-icon', 'tabler:search');
-                searchInput.placeholder = I18n.t('search.search');
-            }
-        }
+        const isDashboard = moduleId === 'dashboard';
+        const icon = isDashboard ? 'tabler:bolt' : 'tabler:search';
+        const placeholder = isDashboard
+            ? I18n.t('search.actionOrCommand')
+            : I18n.t('search.search');
+        const mobilePlaceholder = isDashboard
+            ? I18n.t('search.action')
+            : I18n.t('search.search');
 
-        // Mobile Suchleiste
-        if (mobileSearchIcon && mobileSearchInput) {
-            if (moduleId === 'dashboard') {
-                mobileSearchIcon.setAttribute('data-icon', 'tabler:bolt');
-                mobileSearchInput.placeholder = I18n.t('search.action');
-            } else {
-                mobileSearchIcon.setAttribute('data-icon', 'tabler:search');
-                mobileSearchInput.placeholder = I18n.t('search.search');
-            }
-        }
+        if (searchIcon) searchIcon.setAttribute('data-icon', icon);
+        if (searchInput) searchInput.placeholder = placeholder;
+        if (mobileIcon) mobileIcon.setAttribute('data-icon', icon);
+        if (mobileInput) mobileInput.placeholder = mobilePlaceholder;
     },
 
     /**
-     * Handles module navigation updates (shared logic for all navigation types)
-     * @param {string} moduleId - The module to navigate to
-     * @param {string} moduleName - Display name of the module
+     * Handles module navigation
      */
     handleModuleNavigation(moduleId, moduleName) {
+        // Update current module
+        this.currentModule = moduleId;
+
         // Update title
         const moduleTitle = document.getElementById('module-title');
         if (moduleTitle) {
             moduleTitle.textContent = moduleName;
         }
 
-        // Update status bar
+        // Update various UI elements
         this.updateStatusBar(moduleId);
-
-        // Update search UI
         this.updateSearchUI(moduleId);
 
-        // Update toolbar button text and FAB icon
+        // Update toolbar and FAB
         const ctaText = document.getElementById('cta-text');
         const fabIcon = document.querySelector('.fab-icon');
 
@@ -322,378 +768,171 @@ const Router = {
 
         if (fabIcon) {
             fabIcon.setAttribute('data-icon',
-                moduleId === 'dashboard'
-                    ? 'tabler:layout-dashboard'
-                    : 'tabler:plus'
+                moduleId === 'dashboard' ? 'tabler:layout-dashboard' : 'tabler:plus'
             );
         }
-
-        // Module navigation: ${moduleId}
     },
 
-    attachDashboardEventListeners(userType) {
-        const sidenav = document.getElementById('sidenav');
-        const sidenavToggle = document.getElementById('sidenav-toggle');
-        const titlebar = document.getElementById('titlebar');
-        const appContent = document.getElementById('app-content');
-        const sidenavLogo = document.getElementById('sidenav-logo');
-        const toolbar = document.getElementById('toolbar');
-        const searchInput = document.getElementById('search-input');
-        const mobileSearchInput = document.getElementById('mobile-search-input');
-        const mobileSearchIcon = document.getElementById('mobile-search-icon');
-        const searchClearButton = document.getElementById('search-clear-button');
-        const mobileSearchClearButton = document.getElementById('mobile-search-clear');
-        const ctaText = document.getElementById('cta-text');
-        const ctaButton = document.querySelector('.btn-cta');
-        const fab = document.getElementById('fab');
-        const fabText = document.getElementById('fab-text');
+    /**
+     * Updates bottom navigation overflow menu
+     */
+    updateBottomNavigation() {
+        this.scheduleLayoutUpdate({ nav: true });
+    },
 
-        // Search input helper functions
-        const setupSearchInputs = () => {
-            const toggleClearButtonVisibility = (inputEl, buttonEl) => {
-                if (!buttonEl) return;
-                const hasValue = inputEl && inputEl.value.trim().length > 0;
-                buttonEl.classList.toggle('is-visible', hasValue);
-            };
+    /**
+     * Berechnet und rendert die Bottom Navigation (ausgeführt innerhalb rAF)
+     */
+    applyBottomNavigationLayout() {
+        const bottomNav = document.getElementById('bottom-navigation');
+        if (!bottomNav) return;
 
-            const syncClearButtonVisibility = () => {
-                toggleClearButtonVisibility(searchInput, searchClearButton);
-                toggleClearButtonVisibility(mobileSearchInput, mobileSearchClearButton);
-            };
-
-            const syncSearchValues = (sourceInput, targetInput) => {
-                if (targetInput) {
-                    targetInput.value = sourceInput.value;
-                }
-                syncClearButtonVisibility();
-            };
-
-            const clearSearchInputs = () => {
-                if (searchInput) searchInput.value = '';
-                if (mobileSearchInput) mobileSearchInput.value = '';
-                syncClearButtonVisibility();
-            };
-
-            return { syncClearButtonVisibility, syncSearchValues, clearSearchInputs };
-        };
-
-        const { syncClearButtonVisibility, syncSearchValues, clearSearchInputs } = setupSearchInputs();
-
-        // Toolbar initial anpassen (sichtbar, korrekter Text für Dashboard)
-        if (toolbar) {
-            toolbar.style.display = 'flex';
-            if (ctaText) {
-                ctaText.textContent = I18n.t('buttons.addWidget');
-            }
-        }
-
-        // CTA Button Funktionalität wurde entfernt - Buttons bleiben ohne Funktion
-
-        // Mobile Suchfeld Event-Handler
-        if (mobileSearchInput) {
-            // Synchronisiere mit Desktop-Suchfeld
-            mobileSearchInput.addEventListener('input', (e) => {
-                syncSearchValues(e.target, searchInput);
-            });
-
-            // Enter-Taste für Dashboard-Aktionen
-            mobileSearchInput.addEventListener('keydown', (e) => {
-                const activeModule = document.querySelector('.bottom-nav-item.active');
-                const moduleId = activeModule ? activeModule.dataset.module : 'dashboard';
-
-                if (moduleId === 'dashboard' && e.key === 'Enter') {
-                    e.preventDefault();
-                    // Dashboard action executed
-                    clearSearchInputs();
-                }
-            });
-        }
-
-        // Desktop Suchfeld synchronisieren
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                syncSearchValues(e.target, mobileSearchInput);
-            });
-        }
-
-        if (searchClearButton && searchInput) {
-            searchClearButton.addEventListener('click', () => {
-                clearSearchInputs();
-                searchInput.focus();
-            });
-        }
-
-        if (mobileSearchClearButton && mobileSearchInput) {
-            mobileSearchClearButton.addEventListener('click', () => {
-                clearSearchInputs();
-                mobileSearchInput.focus();
-            });
-        }
-
-        // Suchleiste initial für Dashboard anpassen
-        this.updateSearchUI('dashboard');
-
-        // Event Listener für Such-Prompt auf Dashboard
-        if (searchInput) {
-            searchInput.addEventListener('keydown', (e) => {
-                const activeModule = document.querySelector('.sidenav-item.active');
-                const moduleId = activeModule ? activeModule.dataset.module : 'dashboard';
-
-                if (moduleId === 'dashboard' && e.key === 'Enter') {
-                    e.preventDefault();
-                    // Dashboard action executed
-                    clearSearchInputs();
-                }
-            });
-        }
-
-        syncClearButtonVisibility();
-
-
-        // Sidenav Toggle
-        sidenavToggle.addEventListener('click', () => {
-            // Animation-Klasse hinzufügen um Icons einzufrieren
-            sidenav.classList.add('animating');
-
-            // Kollabieren/Expandieren
-            const isCollapsed = sidenav.classList.toggle('collapsed');
-            titlebar.classList.toggle('sidenav-collapsed', isCollapsed);
-
-            // Toolbar auch verschieben
-            const toolbar = document.getElementById('toolbar');
-            if (toolbar) {
-                toolbar.classList.toggle('sidenav-collapsed', isCollapsed);
-            }
-
-            // Content verschieben
-            appContent.style.marginLeft = isCollapsed ? '64px' : '230px';
-
-            // Nach Animation: Einfrierung aufheben
-            setTimeout(() => {
-                sidenav.classList.remove('animating');
-            }, 250); // Etwas länger als die 230ms Animation
-
-            // Status speichern
-            localStorage.setItem('simplimed_sidenav_collapsed', isCollapsed.toString());
-        });
-
-        // Logo Click
-        const sidenavLogoContainer = document.getElementById('sidenav-logo');
-        sidenavLogoContainer.addEventListener('click', () => {
-            this.navigate('dashboard');
-        });
-
-        // Navigations-Items
-        const navItems = document.querySelectorAll('.sidenav-item');
-        navItems.forEach(item => {
-            item.addEventListener('click', () => {
-                const moduleId = item.getAttribute('data-module');
-
-                if (moduleId === 'logout') {
-                    AuthManager.logout();
-                    this.navigate('login');
-                } else {
-                    // Aktiven Status setzen
-                    navItems.forEach(i => i.classList.remove('active'));
-                    item.classList.add('active');
-
-                    // Get module name and handle navigation
-                    const moduleName = item.querySelector('.sidenav-item-text').textContent;
-                    this.handleModuleNavigation(moduleId, moduleName);
-                }
-            });
-        });
-
-        // Bottom Navigation Items
-        const bottomNavItems = document.querySelectorAll('.bottom-nav-item:not(.overflow-menu)');
-        bottomNavItems.forEach(item => {
-            item.addEventListener('click', () => {
-                const moduleId = item.getAttribute('data-module');
-
-                // Aktiven Status setzen
-                bottomNavItems.forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
-
-                // Desktop Sidenav auch synchronisieren
-                navItems.forEach(i => {
-                    if (i.getAttribute('data-module') === moduleId) {
-                        navItems.forEach(n => n.classList.remove('active'));
-                        i.classList.add('active');
-                    }
-                });
-
-                // Get module name and handle navigation
-                const moduleName = item.querySelector('.bottom-nav-item-text').textContent;
-                this.handleModuleNavigation(moduleId, moduleName);
-
-                // Bottom Navigation aktualisieren
-                this.updateBottomNavigation();
-            });
-        });
-
-        // Overflow Menu Button Click
+        const allItems = Array.from(bottomNav.querySelectorAll('.bottom-nav-item:not(.overflow-menu)'));
         const overflowButton = document.getElementById('bottom-nav-overflow');
         const overflowPopup = document.getElementById('bottom-nav-overflow-popup');
 
-        if (overflowButton && overflowPopup) {
-            overflowButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                overflowPopup.classList.toggle('show');
-            });
+        if (allItems.length === 0) return;
 
-            // Klick außerhalb schließt Popup
-            document.addEventListener('click', (e) => {
-                if (!overflowPopup.contains(e.target) && e.target !== overflowButton && !overflowButton.contains(e.target)) {
-                    overflowPopup.classList.remove('show');
-                }
-            });
+        // Calculate how many items can fit
+        const containerWidth = bottomNav.offsetWidth;
+        const maxVisibleItems = Math.floor(containerWidth / this.BOTTOM_NAV_ITEM_WIDTH);
 
-            // Overflow Items Click Handler (Event Delegation)
-            overflowPopup.addEventListener('click', (e) => {
-                const overflowItem = e.target.closest('.bottom-nav-overflow-item');
-                if (!overflowItem) return;
-
-                const moduleId = overflowItem.dataset.module;
-
-                // Popup schließen
-                overflowPopup.classList.remove('show');
-
-                // Aktiven Status setzen in Bottom Nav Items
-                bottomNavItems.forEach(i => i.classList.remove('active'));
-                const matchingItem = Array.from(bottomNavItems).find(i => i.dataset.module === moduleId);
-                if (matchingItem) {
-                    matchingItem.classList.add('active');
-                }
-
-                // Desktop Sidenav auch synchronisieren
-                navItems.forEach(i => {
-                    if (i.getAttribute('data-module') === moduleId) {
-                        navItems.forEach(n => n.classList.remove('active'));
-                        i.classList.add('active');
-                    }
-                });
-
-                // Get module name and handle navigation
-                const moduleName = overflowItem.querySelector('.bottom-nav-overflow-item-text').textContent;
-                this.handleModuleNavigation(moduleId, moduleName);
-
-                // Bottom Navigation aktualisieren
-                this.updateBottomNavigation();
-            });
-        }
-
-        // Initial Bottom Navigation aktualisieren (nachdem das Layout einmal berechnet wurde)
-        if (typeof window !== 'undefined' && typeof window.requestAnimationFrame === 'function') {
-            window.requestAnimationFrame(() => this.updateBottomNavigation());
-        } else {
-            this.updateBottomNavigation();
-        }
-
-        // Bei Fenstergrößenänderung Bottom Navigation aktualisieren (Frame-gebunden für flüssigere Updates)
-        const handleResize = () => {
-            if (typeof window.requestAnimationFrame === 'function') {
-                if (this._resizeRafId) {
-                    return;
-                }
-                this._resizeRafId = window.requestAnimationFrame(() => {
-                    this._resizeRafId = null;
-                    this.updateBottomNavigation();
-                });
-            } else {
-                // Fallback wenn requestAnimationFrame nicht verfügbar ist
-                this.updateBottomNavigation();
+        // Mark navigation as ready
+        const markReady = () => {
+            if (!bottomNav.classList.contains('is-ready')) {
+                bottomNav.classList.add('is-ready');
             }
         };
 
-        // Entferne vorherigen Listener falls vorhanden
-        if (this._resizeHandler) {
-            window.removeEventListener('resize', this._resizeHandler);
-            if (this._resizeRafId && typeof window.cancelAnimationFrame === 'function') {
-                window.cancelAnimationFrame(this._resizeRafId);
-                this._resizeRafId = null;
+        // All items fit
+        if (allItems.length <= maxVisibleItems) {
+            allItems.forEach(item => item.style.display = 'flex');
+            if (overflowButton) {
+                overflowButton.classList.remove('visible');
+                overflowButton.style.display = 'none';
             }
-        }
-        this._resizeHandler = handleResize;
-        window.addEventListener('resize', handleResize);
-
-        this.attachAvatarMenuListeners();
-    },
-
-    /**
-     * Aktualisiert die Uhrzeit in der Statusbar
-     */
-    updateTime() {
-        const timeEl = document.getElementById('current-time');
-        if (timeEl) {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            timeEl.textContent = `${hours}:${minutes}`;
-        }
-    },
-
-    /**
-     * Fügt Event-Listener für Avatar-Menü hinzu
-     */
-    attachAvatarMenuListeners() {
-        const avatar = document.getElementById('avatar');
-        const avatarMenu = document.getElementById('avatar-menu');
-        const languageSelect = document.getElementById('language-select');
-        const themeSelect = document.getElementById('theme-select');
-
-        if (!avatar || !avatarMenu || !languageSelect || !themeSelect) {
+            if (overflowPopup) {
+                overflowPopup.innerHTML = '';
+            }
+            markReady();
             return;
         }
 
-        // Aktuellen Wert setzen
-        languageSelect.value = I18n.getLanguage();
-        themeSelect.value = ThemeManager.getTheme();
+        // Need overflow menu
+        const visibleCount = Math.max(this.MIN_VISIBLE_BOTTOM_NAV_ITEMS, maxVisibleItems - 1);
+        const visibleItems = allItems.slice(0, visibleCount);
+        const hiddenItems = allItems.slice(visibleCount);
 
-        // Avatar Click - Menü öffnen/schließen
+        // Show/hide items
+        visibleItems.forEach(item => item.style.display = 'flex');
+        hiddenItems.forEach(item => item.style.display = 'none');
+
+        // Setup overflow button
+        if (overflowButton) {
+            overflowButton.classList.add('visible');
+            overflowButton.style.display = 'flex';
+        }
+
+        // Populate overflow popup
+        if (overflowPopup && hiddenItems.length > 0) {
+            const activeModule = this.currentModule;
+
+            overflowPopup.innerHTML = hiddenItems.map(item => {
+                const moduleId = item.dataset.module;
+                const icon = item.querySelector('.bottom-nav-item-icon')?.getAttribute('data-icon') || '';
+                const text = item.querySelector('.bottom-nav-item-text')?.textContent || '';
+                const isActive = moduleId === activeModule;
+
+                return `
+                    <div class="bottom-nav-overflow-item ${isActive ? 'active' : ''}" data-module="${moduleId}">
+                        <span class="iconify bottom-nav-overflow-item-icon" data-icon="${icon}"></span>
+                        <span class="bottom-nav-overflow-item-text">${text}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        markReady();
+    },
+
+    /**
+     * Updates time in status bar
+     */
+    updateTime() {
+        const timeEl = document.getElementById('current-time');
+        if (!timeEl) return;
+
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        timeEl.textContent = `${hours}:${minutes}`;
+    },
+
+    /**
+     * Attaches avatar menu event listeners
+     */
+    attachAvatarMenuListeners() {
+        const avatar = document.getElementById('avatar');
+        const menu = document.getElementById('avatar-menu');
+        const languageSelect = document.getElementById('language-select');
+        const themeSelect = document.getElementById('theme-select');
+
+        if (!avatar || !menu) return;
+
+        // Set current values
+        if (languageSelect) languageSelect.value = I18n.getLanguage();
+        if (themeSelect) themeSelect.value = ThemeManager.getTheme();
+
+        // Toggle menu
         avatar.addEventListener('click', (e) => {
             e.stopPropagation();
-            avatarMenu.classList.toggle('show');
+            menu.classList.toggle('show');
         });
 
-        if (this._avatarOutsideHandler) {
-            document.removeEventListener('click', this._avatarOutsideHandler);
-        }
+        // Close on outside click
         this._avatarOutsideHandler = (e) => {
-            if (!avatarMenu.contains(e.target) && !avatar.contains(e.target)) {
-                avatarMenu.classList.remove('show');
+            if (!menu.contains(e.target) && !avatar.contains(e.target)) {
+                menu.classList.remove('show');
             }
         };
-
-        // Klick außerhalb schließt Menü
         document.addEventListener('click', this._avatarOutsideHandler);
 
-        // Sprache wechseln
-        languageSelect.addEventListener('change', async (e) => {
-            await I18n.setLanguage(e.target.value);
-            this.render();
-        });
+        // Language change
+        if (languageSelect) {
+            languageSelect.addEventListener('change', async (e) => {
+                await I18n.setLanguage(e.target.value);
+                this.render();
+            });
+        }
 
-        // Theme wechseln
-        themeSelect.addEventListener('change', (e) => {
-            ThemeManager.setTheme(e.target.value);
-            avatarMenu.classList.remove('show');
-        });
+        // Theme change
+        if (themeSelect) {
+            themeSelect.addEventListener('change', (e) => {
+                ThemeManager.setTheme(e.target.value);
+                menu.classList.remove('show');
+            });
+        }
 
-        // Menü-Items
-        const menuItems = avatarMenu.querySelectorAll('.avatar-menu-item[data-action]');
+        // Menu items
+        const menuItems = menu.querySelectorAll('.avatar-menu-item[data-action]');
         menuItems.forEach(item => {
             item.addEventListener('click', () => {
                 const action = item.getAttribute('data-action');
 
-                if (action === 'logout') {
-                    AuthManager.logout();
-                    this.navigate('login');
-                } else if (action === 'imprint') {
-                    ImprintManager.show();
-                    avatarMenu.classList.remove('show');
-                } else {
-                    // Handle action: ${action}
-                    avatarMenu.classList.remove('show');
+                switch (action) {
+                    case 'logout':
+                        AuthManager.logout();
+                        this.navigate('login');
+                        break;
+                    case 'imprint':
+                        if (typeof ImprintManager !== 'undefined') {
+                            ImprintManager.show();
+                        }
+                        menu.classList.remove('show');
+                        break;
+                    default:
+                        menu.classList.remove('show');
+                        break;
                 }
             });
         });

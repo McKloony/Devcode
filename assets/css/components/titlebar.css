@@ -11,7 +11,7 @@
     left: 0;
     right: 0;
     z-index: 100;
-    transition: margin-left 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    /* REMOVED: transition that was causing slide-in animation on resize */
 }
 
 .titlebar-logo-container {
@@ -90,20 +90,25 @@
     color: var(--color-text-primary);
 }
 
-@media (max-width: 1023px) {
-    .titlebar-logo-container.logged-in {
-        display: flex !important;
-    }
-}
 
 .titlebar-search {
     width: 440px;
     margin: 0 16px;
 }
 
+/* Mobile-only logo container */
+.titlebar-logo-container.mobile-only {
+    display: none;
+}
+
 @media (max-width: 1023px) {
     .titlebar-search {
         display: none;
+    }
+
+    /* Show logo on mobile */
+    .titlebar-logo-container.mobile-only {
+        display: flex;
     }
 }
 
@@ -267,9 +272,3 @@
     padding: 4px 0;
 }
 
-/* Desktop nach Login: Titlebar-Logo ausblenden (wird durch Sidenav-Logo ersetzt) */
-@media (min-width: 1024px) {
-    .titlebar-logo-container.logged-in {
-        display: none;
-    }
-}

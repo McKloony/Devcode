@@ -8,7 +8,7 @@
     border-right: 1px solid var(--color-border);
     box-shadow: var(--shadow-level1);
     z-index: 1000;
-    transition: width 230ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    /* REMOVED: transition that was causing slide-in animation on resize */
     overflow: visible;
 }
 
@@ -64,7 +64,7 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    transition: opacity 250ms ease-in-out;
+    /* REMOVED: opacity transition that was contributing to animation on resize */
 }
 
 .sidenav-logo-full {
@@ -99,7 +99,7 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
-    padding: 8px 4px;
+    padding: 48px 4px 12px;
     overflow-y: auto;
     overflow-x: hidden;
     height: calc(100vh - 28px - 64px - 20px);
@@ -120,7 +120,7 @@
 }
 
 .sidenav.collapsed .sidenav-items {
-    padding: 8px 0;
+    padding: 48px 4px 12px;
     display: flex;
     flex-direction: column;
 }
@@ -128,12 +128,12 @@
 .sidenav.collapsed .sidenav-item {
     padding: 12px 20px; /* Gleiche Icon-Position beibehalten */
     gap: 0;
-    width: 64px;
+    width: 100%;
 }
 
 .sidenav.collapsed .sidenav-item-icon {
-    /* Icon bleibt EXAKT an gleicher Position */
-    left: 20px; /* Zentriert in 64px Sidebar */
+    /* Icon bleibt EXAKT an gleicher Position wie im expandierten Zustand */
+    left: 16px; /* Gleiche Position: 4px (container) + 16px = 20px von Sidebar-Kante */
 }
 
 .sidenav.collapsed .sidenav-item-text {
@@ -170,7 +170,7 @@
     white-space: nowrap;
     margin-left: 0; /* Platz wird durch Padding des Parents gesteuert */
     opacity: 1;
-    transition: opacity 230ms cubic-bezier(0.4, 0.0, 0.2, 1); /* Gleiche Duration wie Sidebar */
+    /* REMOVED: transition that was causing animation on resize */
 }
 
 .sidenav-item.active .sidenav-item-icon,
@@ -181,15 +181,12 @@
 /* Beim Kollabieren: Text sofort ausblenden */
 .sidenav.collapsed .sidenav-item-text {
     opacity: 0;
-    transition-duration: 100ms; /* Schneller ausblenden */
+    /* REMOVED: transition-duration that was causing animation */
     visibility: hidden;
     pointer-events: none;
 }
 
-/* Beim Expandieren: Text verzögert einblenden */
-.sidenav:not(.collapsed) .sidenav-item-text {
-    transition-delay: 130ms; /* Warten bis Sidebar fast offen ist */
-}
+/* REMOVED: transition-delay that was causing animation on expand */
 
 .sidenav-toggle {
     position: absolute;
@@ -225,8 +222,16 @@
     transform: rotate(180deg);
 }
 
-.sidenav-spacer {
-    flex: 1;
+.sidenav-divider {
+    height: 1px;
+    background-color: var(--color-border);
+    border-radius: 999px;
+    margin: 16px 12px 12px;
+    opacity: 0.75;
+}
+
+.sidenav.collapsed .sidenav-divider {
+    margin: 16px 8px 12px;
 }
 
 /* Titlebar Verschiebung bei Sidenav */

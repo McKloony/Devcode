@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" data-app-version="1.1.4">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="SimpliMed - Modern Healthcare Management System">
+    <meta name="theme-color" content="#007BB4">
     <title>SimpliMed</title>
     <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicons/favicon_016.png">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicons/favicon_032.png">
@@ -16,13 +18,11 @@
     <!-- Performance Hints -->
     <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
     <link rel="dns-prefetch" href="//cdn.tailwindcss.com">
-    <link rel="preconnect" href="https://unpkg.com" crossorigin>
-    <link rel="dns-prefetch" href="//unpkg.com">
     <link rel="preconnect" href="https://code.iconify.design" crossorigin>
     <link rel="dns-prefetch" href="//code.iconify.design">
 
-    <!-- Tailwind CSS via CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind CSS via CDN (minified) -->
+    <script src="https://cdn.tailwindcss.com" defer></script>
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="assets/css/main.css">
@@ -37,24 +37,21 @@
     <link rel="stylesheet" href="assets/css/components/toolbar.css">
     <link rel="stylesheet" href="assets/css/components/imprint-popup.css">
 
-    <!-- Iconify -->
+    <!-- Iconify Icon Framework -->
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js" defer></script>
-
-    <!-- Vue.js 3 via CDN (Production) -->
-    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js" defer crossorigin="anonymous"></script>
 </head>
 <body>
     <div id="app">
-        <!-- App Shell wird hier dynamisch geladen -->
+        <!-- Application shell loaded dynamically -->
     </div>
 
-    <!-- JavaScript -->
-    <script src="assets/js/i18n.js" defer></script>
-    <script src="assets/js/theme.js" defer></script>
-    <script src="assets/js/auth.js" defer></script>
-    <script src="assets/js/imprint.js" defer></script>
-    <script src="assets/js/view-templates.js" defer></script>
-    <script src="assets/js/router.js" defer></script>
-    <script src="assets/js/app.js" defer></script>
+    <!-- Core Application Scripts (load order is important) -->
+    <script src="assets/js/i18n.js"></script>
+    <script src="assets/js/theme.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/imprint.js"></script>
+    <script src="assets/js/view-templates.js"></script>
+    <script src="assets/js/router.js"></script>
+    <script src="assets/js/app.js"></script>
 </body>
 </html>

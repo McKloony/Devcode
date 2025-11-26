@@ -1,0 +1,58 @@
+[data-theme="contrast"] {
+    --color-surface-primary: #000000;
+    --color-surface-primary-variant: #000000;
+    --color-surface-secondary: #000000;
+    --color-shell-surface: var(--color-surface-primary);
+    --color-text-primary: #FFFFFF;
+    --color-text-secondary: #FFFFFF;
+    /* Kontextfarbe des Contrast-Themes: CTA- und Auswahlzustände nur hier anpassen */
+    --color-context-background: #FFFFFF;
+    --color-context-foreground: #000000;
+    --color-interactive-cta: var(--color-context-background);
+    --color-interactive-cta-hover: rgba(255, 255, 255, 0.5);
+    --color-interactive-cta-text: var(--color-context-foreground);
+    --color-interactive-active: var(--color-context-background);
+    --color-interactive-hover: rgba(255, 255, 255, 0.5);
+    --color-border: #FFFFFF;
+    --color-border-rgb: 255, 255, 255;
+    --shadow-level1: none;
+    --shadow-level2: none;
+}
+
+/* Contrast theme specific login card border */
+[data-theme="contrast"] .login-card {
+    border: 2px solid var(--color-border);
+    box-shadow: none;
+}
+
+/* Eingabefelder im Contrast Theme an allgemeine Feldfarben angleichen */
+[data-theme="contrast"] .form-input {
+    background-color: var(--color-surface-secondary);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+}
+
+[data-theme="contrast"] .form-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Contrast theme specific external elements */
+[data-theme="contrast"] .error-message-external {
+    background-color: #FF0000;
+    color: #FFFFFF;
+    border: 2px solid #FF0000;
+    font-weight: 600;
+}
+
+/* Linkfarbe im Contrast Theme */
+[data-theme="contrast"] a,
+[data-theme="contrast"] .form-link,
+[data-theme="contrast"] .switch-login-type-link {
+    color: #FFFFFF;
+}
+
+[data-theme="contrast"] a:hover,
+[data-theme="contrast"] .form-link:hover,
+[data-theme="contrast"] .switch-login-type-link:hover {
+    color: #DDDDDD;
+}

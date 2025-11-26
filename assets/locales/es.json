@@ -1,0 +1,81 @@
+{
+    "app": {
+        "title": "SimpliMed"
+    },
+    "login": {
+        "title": "Iniciar sesión",
+        "username": "Nombre de usuario",
+        "usernamePlaceholder": "Introduce el nombre de usuario",
+        "password": "Contraseña",
+        "passwordPlaceholder": "Introduce la contraseña",
+        "rememberMe": "Mantenerme conectado",
+        "forgotPassword": "¿Olvidó su contraseña?",
+        "loginButton": "Iniciar sesión",
+        "patientLogin": "Inicio de sesión Paciente",
+        "therapistLogin": "Inicio de sesión Terapeuta",
+        "switchToTherapist": "Cambiar a inicio de sesión Terapeuta",
+        "switchToPatient": "Cambiar a inicio de sesión Paciente",
+        "errorInvalidCredentials": "Nombre de usuario o contraseña incorrectos",
+        "errorNetworkFailed": "Error de conexión"
+    },
+    "avatar": {
+        "language": "Idioma",
+        "theme": "Tema",
+        "help": "Ayuda",
+        "contact": "Contacto",
+        "imprint": "Aviso legal"
+    },
+    "statusbar": {
+        "ready": "Listo",
+        "connected": "Conectado",
+        "connecting": "Conectando...",
+        "module": "Módulo",
+        "user": "Usuario",
+        "release": "Versión"
+    },
+    "menu": {
+        "profile": "Perfil",
+        "settings": "Configuración",
+        "help": "Ayuda",
+        "contact": "Contacto",
+        "imprint": "Aviso legal",
+        "logout": "Cerrar sesión"
+    },
+    "themes": {
+        "light": "Light-Theme",
+        "dark": "Dark-Theme",
+        "design": "Design-Theme",
+        "contrast": "Contrast-Theme"
+    },
+    "modules": {
+        "dashboard": "Vista general",
+        "calendar": "Calendario",
+        "contacts": "Contactos",
+        "documentation": "Documentación",
+        "invoices": "Facturas",
+        "payments": "Pagos",
+        "healthtalk": "Healthtalk",
+        "healthshop": "Healthshop",
+        "appointments": "Citas",
+        "documents": "Documentos"
+    },
+    "buttons": {
+        "new": "Nuevo",
+        "add": "Agregar entrada",
+        "addWidget": "Agregar widget",
+        "more": "Más"
+    },
+    "search": {
+        "actionOrCommand": "Ejecutar acción o comando...",
+        "search": "Buscar...",
+        "action": "Ejecutar acción...",
+        "clear": "Borrar búsqueda"
+    },
+    "dashboard": {
+        "title": "Panel de control",
+        "content": "El contenido del panel se implementará en pasos posteriores.",
+        "createNewEntry": "Crear nueva entrada",
+        "addWidgetDialog": "Agregar widget - El diálogo se implementará aquí",
+        "createEntryDialog": "Crear nueva entrada - El diálogo se implementará aquí"
+    }
+}

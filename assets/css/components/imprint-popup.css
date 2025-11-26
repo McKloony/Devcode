@@ -1,0 +1,166 @@
+/* Impressum Popup Overlay */
+.imprint-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;  /* Explizite volle Breite */
+    height: 100vh;  /* Explizite volle Höhe */
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 200ms ease;
+    pointer-events: auto;  /* Sicherstellen dass Overlay klickbar ist */
+}
+
+.imprint-overlay.show {
+    display: flex;
+    opacity: 1;
+}
+
+/* Impressum Popup Container */
+.imprint-popup {
+    background-color: var(--color-surface-primary);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: scale(0.9);
+    transition: transform 200ms ease;
+}
+
+.imprint-overlay.show .imprint-popup {
+    transform: scale(1);
+}
+
+/* Impressum Header */
+.imprint-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--color-border);
+    background-color: var(--color-surface-secondary);
+}
+
+.imprint-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.imprint-close {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background-color: transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+}
+
+.imprint-close:hover {
+    background-color: var(--color-interactive-hover);
+    color: var(--color-text-primary);
+}
+
+.imprint-close-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+}
+
+/* Impressum Content */
+.imprint-content {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.imprint-subtitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0 0 16px 0;
+}
+
+.imprint-section {
+    margin-bottom: 24px;
+}
+
+.imprint-section:last-child {
+    margin-bottom: 0;
+}
+
+.imprint-section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0 0 8px 0;
+}
+
+.imprint-company-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0 0 8px 0;
+}
+
+.imprint-text {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin: 4px 0;
+}
+
+.imprint-text strong {
+    color: var(--color-text-primary);
+    font-weight: 500;
+}
+
+.imprint-divider {
+    height: 1px;
+    background-color: var(--color-border);
+    margin: 20px 0;
+}
+
+/* Mobile Optimierung */
+@media (max-width: 640px) {
+    .imprint-popup {
+        width: 95%;
+        max-height: 90vh;
+    }
+
+    .imprint-header {
+        padding: 16px 20px;
+    }
+
+    .imprint-title {
+        font-size: 18px;
+    }
+
+    .imprint-content {
+        padding: 20px;
+    }
+}
+
+/* Sicherstellen dass Modal auf mobilen Geräten wirklich alles abdeckt */
+@media (max-width: 1023px) {
+    .imprint-overlay {
+        position: fixed !important;
+        inset: 0 !important;  /* Moderne Alternative zu top/right/bottom/left: 0 */
+    }
+}

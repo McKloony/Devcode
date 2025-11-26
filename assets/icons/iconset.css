@@ -1,0 +1,135 @@
+@font-face {
+  font-family: "IconSimpliMed";
+  src: url("IconSimpliMed.eot");
+  src: url("IconSimpliMed.eot?#iefix") format("embedded-opentype"),
+       url("IconSimpliMed.woff2") format("woff2"),
+       url("IconSimpliMed.woff") format("woff"),
+       url("IconSimpliMed.ttf") format("truetype"),
+       url("IconSimpliMed.svg#IconSimpliMed") format("svg");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+.icon {
+  font-family: "IconSimpliMed" !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  display: inline-block;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="icon_"],
+[class*=" icon_"] {
+  font-family: "IconSimpliMed" !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon_user::before { content: "\e900"; }
+.icon_user_earth::before { content: "\e901"; }
+.icon_document_zip::before { content: "\e902"; }
+.icon_drop_down_list::before { content: "\e903"; }
+.icon_folder_zip::before { content: "\e904"; }
+.icon_navigate_cross::before { content: "\e905"; }
+.icon_navigate_minus::before { content: "\e95e"; }
+.icon_navigate_plus::before { content: "\e95f"; }
+.icon_about::before { content: "\e906"; }
+.icon_bell::before { content: "\e907"; }
+.icon_bookkeeper::before { content: "\e908"; }
+.icon_bookmark::before { content: "\e909"; }
+.icon_bottle_of_pills::before { content: "\e90a"; }
+.icon_businesswoman::before { content: "\e90b"; }
+.icon_businesswomen::before { content: "\e90c"; }
+.icon_calendar::before { content: "\e90d"; }
+.icon_calendar_5::before { content: "\e90e"; }
+.icon_calendar_clock::before { content: "\e90f"; }
+.icon_cash_register::before { content: "\e910"; }
+.icon_cashier::before { content: "\e911"; }
+.icon_chart_area::before { content: "\e912"; }
+.icon_chart_column::before { content: "\e913"; }
+.icon_check::before { content: "\e914"; }
+.icon_checks::before { content: "\e915"; }
+.icon_clipboard::before { content: "\e916"; }
+.icon_clipboard_checks::before { content: "\e917"; }
+.icon_clipboard_paste::before { content: "\e918"; }
+.icon_contract::before { content: "\e919"; }
+.icon_copy::before { content: "\e91a"; }
+.icon_credit_card::before { content: "\e91b"; }
+.icon_cut::before { content: "\e91c"; }
+.icon_doctor::before { content: "\e91d"; }
+.icon_document_attachment::before { content: "\e91e"; }
+.icon_document_notebook::before { content: "\e91f"; }
+.icon_document_pulse::before { content: "\e920"; }
+.icon_door_exit::before { content: "\e921"; }
+.icon_edit::before { content: "\e922"; }
+.icon_eye::before { content: "\e923"; }
+.icon_eye_blind::before { content: "\e924"; }
+.icon_fingerprint_scan::before { content: "\e925"; }
+.icon_folder::before { content: "\e926"; }
+.icon_folder_into::before { content: "\e927"; }
+.icon_folder_open::before { content: "\e928"; }
+.icon_folder_out::before { content: "\e929"; }
+.icon_folders2::before { content: "\e92a"; }
+.icon_funnel::before { content: "\e92b"; }
+.icon_garbage::before { content: "\e92c"; }
+.icon_gearwheel::before { content: "\e92d"; }
+.icon_gearwheels::before { content: "\e92e"; }
+.icon_history::before { content: "\e92f"; }
+.icon_history2::before { content: "\e930"; }
+.icon_home::before { content: "\e931"; }
+.icon_id_card::before { content: "\e932"; }
+.icon_index2::before { content: "\e933"; }
+.icon_information::before { content: "\e934"; }
+.icon_key2::before { content: "\e935"; }
+.icon_laptop::before { content: "\e936"; }
+.icon_lightbulb_off::before { content: "\e937"; }
+.icon_lock::before { content: "\e938"; }
+.icon_lock_open::before { content: "\e939"; }
+.icon_magic_wand::before { content: "\e93a"; }
+.icon_magnifying_glass::before { content: "\e93b"; }
+.icon_mail::before { content: "\e93c"; }
+.icon_mail_open::before { content: "\e93d"; }
+.icon_mail_open2::before { content: "\e93e"; }
+.icon_message::before { content: "\e93f"; }
+.icon_money_coins::before { content: "\e940"; }
+.icon_money_coins2::before { content: "\e941"; }
+.icon_navigate_close::before { content: "\e942"; }
+.icon_navigate_down::before { content: "\e943"; }
+.icon_navigate_left::before { content: "\e944"; }
+.icon_navigate_open::before { content: "\e945"; }
+.icon_navigate_right::before { content: "\e946"; }
+.icon_navigate_up::before { content: "\e947"; }
+.icon_newspaper::before { content: "\e948"; }
+.icon_note_text::before { content: "\e949"; }
+.icon_notebook::before { content: "\e94a"; }
+.icon_notebook3::before { content: "\e94b"; }
+.icon_paperclip::before { content: "\e94c"; }
+.icon_pill::before { content: "\e94d"; }
+.icon_plus::before { content: "\e94e"; }
+.icon_print_calculator::before { content: "\e94f"; }
+.icon_printer::before { content: "\e950"; }
+.icon_question::before { content: "\e951"; }
+.icon_server_earth::before { content: "\e952"; }
+.icon_shopping_bag_full::before { content: "\e953"; }
+.icon_shopping_cart_full::before { content: "\e954"; }
+.icon_sort_ascending::before { content: "\e955"; }
+.icon_sort_descending::before { content: "\e956"; }
+.icon_stethoscope::before { content: "\e957"; }
+.icon_tag::before { content: "\e958"; }
+.icon_view_1_1::before { content: "\e959"; }
+.icon_wallet::before { content: "\e95a"; }
+.icon_wax_seal::before { content: "\e95b"; }
+.icon_zoom_out::before { content: "\e95c"; }
+.icon_zoom_in::before { content: "\e95d"; }

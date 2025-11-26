@@ -1,0 +1,81 @@
+{
+    "app": {
+        "title": "SimpliMed"
+    },
+    "login": {
+        "title": "Login",
+        "username": "Username",
+        "usernamePlaceholder": "Enter username",
+        "password": "Password",
+        "passwordPlaceholder": "Enter password",
+        "rememberMe": "Stay logged in",
+        "forgotPassword": "Forgot password?",
+        "loginButton": "Login",
+        "patientLogin": "Patient Login",
+        "therapistLogin": "Therapist Login",
+        "switchToTherapist": "Switch to Therapist Login",
+        "switchToPatient": "Switch to Patient Login",
+        "errorInvalidCredentials": "Invalid username or password",
+        "errorNetworkFailed": "Connection failed"
+    },
+    "avatar": {
+        "language": "Language",
+        "theme": "Theme",
+        "help": "Help",
+        "contact": "Contact",
+        "imprint": "Imprint"
+    },
+    "statusbar": {
+        "ready": "Ready",
+        "connected": "Connected",
+        "connecting": "Connecting...",
+        "module": "Module",
+        "user": "User",
+        "release": "Release"
+    },
+    "menu": {
+        "profile": "Profile",
+        "settings": "Settings",
+        "help": "Help",
+        "contact": "Contact",
+        "imprint": "Imprint",
+        "logout": "Logout"
+    },
+    "themes": {
+        "light": "Light-Theme",
+        "dark": "Dark-Theme",
+        "design": "Design-Theme",
+        "contrast": "Contrast-Theme"
+    },
+    "modules": {
+        "dashboard": "Overview",
+        "calendar": "Calendar",
+        "contacts": "Contacts",
+        "documentation": "Documentation",
+        "invoices": "Invoices",
+        "payments": "Payments",
+        "healthtalk": "Healthtalk",
+        "healthshop": "Healthshop",
+        "appointments": "Appointments",
+        "documents": "Documents"
+    },
+    "buttons": {
+        "new": "New",
+        "add": "Add Entry",
+        "addWidget": "Add Widget",
+        "more": "More"
+    },
+    "search": {
+        "actionOrCommand": "Execute action or command...",
+        "search": "Search...",
+        "action": "Execute action...",
+        "clear": "Clear search"
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "content": "Dashboard contents will be implemented in later steps.",
+        "createNewEntry": "Create new entry",
+        "addWidgetDialog": "Add widget - Dialog will be implemented here",
+        "createEntryDialog": "Create new entry - Dialog will be implemented here"
+    }
+}

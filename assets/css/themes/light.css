@@ -1,0 +1,84 @@
+[data-theme="light"] {
+    --color-surface-primary: #FFFFFF;
+    --color-surface-primary-variant: #FAFAFA;
+    --color-surface-secondary: #FFFFFF;
+    --color-shell-surface: var(--color-surface-primary-variant);
+    --color-text-primary: #111111;
+    --color-text-secondary: #5D5D5D;
+    /* Kontextfarbe des Light-Themes: CTA- und Auswahlzustände nur hier anpassen */
+    --color-context-background: #007BB4;
+    --color-context-foreground: #FFFFFF;
+    --color-interactive-cta: var(--color-context-background);
+    --color-interactive-cta-hover: #969696;
+    --color-interactive-cta-text: var(--color-context-foreground);
+    --color-interactive-active: var(--color-context-background);
+    --color-interactive-hover: #969696;
+    --color-border: #D1D5DB;
+    --color-border-rgb: 209, 213, 219;
+    --shadow-level1: 4px 0 16px -4px rgba(0,0,0,0.1);
+    --shadow-level2: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+
+/* Light theme specific error message styling */
+[data-theme="light"] .error-message-external {
+    background-color: #FFEBEE;
+    color: #C62828;
+    border: 1px solid rgba(198, 40, 40, 0.15);
+}
+
+/* Overflow-Selection im Light Theme an CTA-Akzent anpassen */
+[data-theme="light"] .bottom-nav-overflow-item.active {
+    background-color: var(--color-context-background);
+}
+
+[data-theme="light"] .bottom-nav-overflow-item.active .bottom-nav-overflow-item-text,
+[data-theme="light"] .bottom-nav-overflow-item.active .bottom-nav-overflow-item-icon {
+    color: var(--color-context-foreground);
+}
+
+/* Floating Action Button im Light Theme anpassen */
+[data-theme="light"] .fab {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="light"] .fab:active {
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.24);
+}
+
+/* Linkfarbe im Light Theme anpassen */
+[data-theme="light"] a,
+[data-theme="light"] .form-link,
+[data-theme="light"] .switch-login-type-link {
+    color: var(--color-context-background);
+}
+
+[data-theme="light"] a:hover,
+[data-theme="light"] .form-link:hover,
+[data-theme="light"] .switch-login-type-link:hover {
+    color: var(--color-interactive-hover);
+}
+
+/* Trennlinien in der SPA für das Light Theme um 50 % aufhellen */
+[data-theme="light"] .titlebar,
+[data-theme="light"] .toolbar,
+[data-theme="light"] .mobile-toolbar {
+    border-bottom-color: #DDE0E4;
+}
+
+[data-theme="light"] .app-content.with-toolbar {
+    background-color: var(--color-surface-primary);
+}
+
+[data-theme="light"] .sidenav {
+    border-right-color: #DDE0E4;
+}
+
+[data-theme="light"] .sidenav-toggle {
+    border-color: #DDE0E4;
+}
+
+[data-theme="light"] .bottom-navigation,
+[data-theme="light"] .buttonbar,
+[data-theme="light"] .statusbar {
+    border-top-color: #DDE0E4;
+}

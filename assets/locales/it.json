@@ -1,0 +1,81 @@
+{
+    "app": {
+        "title": "SimpliMed"
+    },
+    "login": {
+        "title": "Accesso",
+        "username": "Nome utente",
+        "usernamePlaceholder": "Inserisci il nome utente",
+        "password": "Password",
+        "passwordPlaceholder": "Inserisci la password",
+        "rememberMe": "Resta connesso",
+        "forgotPassword": "Password dimenticata?",
+        "loginButton": "Accedi",
+        "patientLogin": "Accesso Paziente",
+        "therapistLogin": "Accesso Terapista",
+        "switchToTherapist": "Passa all'accesso Terapista",
+        "switchToPatient": "Passa all'accesso Paziente",
+        "errorInvalidCredentials": "Nome utente o password non validi",
+        "errorNetworkFailed": "Connessione fallita"
+    },
+    "avatar": {
+        "language": "Lingua",
+        "theme": "Tema",
+        "help": "Aiuto",
+        "contact": "Contatto",
+        "imprint": "Note legali"
+    },
+    "statusbar": {
+        "ready": "Pronto",
+        "connected": "Connesso",
+        "connecting": "Connessione...",
+        "module": "Modulo",
+        "user": "Utente",
+        "release": "Versione"
+    },
+    "menu": {
+        "profile": "Profilo",
+        "settings": "Impostazioni",
+        "help": "Aiuto",
+        "contact": "Contatto",
+        "imprint": "Note legali",
+        "logout": "Disconnetti"
+    },
+    "themes": {
+        "light": "Light-Theme",
+        "dark": "Dark-Theme",
+        "design": "Design-Theme",
+        "contrast": "Contrast-Theme"
+    },
+    "modules": {
+        "dashboard": "Panoramica",
+        "calendar": "Calendario",
+        "contacts": "Contatti",
+        "documentation": "Documentazione",
+        "invoices": "Fatture",
+        "payments": "Pagamenti",
+        "healthtalk": "Healthtalk",
+        "healthshop": "Healthshop",
+        "appointments": "Appuntamenti",
+        "documents": "Documenti"
+    },
+    "buttons": {
+        "new": "Nuovo",
+        "add": "Aggiungi voce",
+        "addWidget": "Aggiungi widget",
+        "more": "Altro"
+    },
+    "search": {
+        "actionOrCommand": "Esegui azione o comando...",
+        "search": "Cerca...",
+        "action": "Esegui azione...",
+        "clear": "Cancella ricerca"
+    },
+    "dashboard": {
+        "title": "Pannello di controllo",
+        "content": "Il contenuto del pannello sarà implementato nei passaggi successivi.",
+        "createNewEntry": "Crea nuova voce",
+        "addWidgetDialog": "Aggiungi widget - La finestra di dialogo sarà implementata qui",
+        "createEntryDialog": "Crea nuova voce - La finestra di dialogo sarà implementata qui"
+    }
+}

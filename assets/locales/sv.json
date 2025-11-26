@@ -1,0 +1,81 @@
+{
+    "app": {
+        "title": "SimpliMed"
+    },
+    "login": {
+        "title": "Inloggning",
+        "username": "Användarnamn",
+        "usernamePlaceholder": "Ange användarnamn",
+        "password": "Lösenord",
+        "passwordPlaceholder": "Ange lösenord",
+        "rememberMe": "Förbli inloggad",
+        "forgotPassword": "Glömt lösenord?",
+        "loginButton": "Logga in",
+        "patientLogin": "Patient Inloggning",
+        "therapistLogin": "Terapeut Inloggning",
+        "switchToTherapist": "Byt till Terapeut Inloggning",
+        "switchToPatient": "Byt till Patient Inloggning",
+        "errorInvalidCredentials": "Ogiltigt användarnamn eller lösenord",
+        "errorNetworkFailed": "Anslutning misslyckades"
+    },
+    "avatar": {
+        "language": "Språk",
+        "theme": "Tema",
+        "help": "Hjälp",
+        "contact": "Kontakt",
+        "imprint": "Impressum"
+    },
+    "statusbar": {
+        "ready": "Redo",
+        "connected": "Ansluten",
+        "connecting": "Ansluter...",
+        "module": "Modul",
+        "user": "Användare",
+        "release": "Version"
+    },
+    "menu": {
+        "profile": "Profil",
+        "settings": "Inställningar",
+        "help": "Hjälp",
+        "contact": "Kontakt",
+        "imprint": "Impressum",
+        "logout": "Logga ut"
+    },
+    "themes": {
+        "light": "Light-Theme",
+        "dark": "Dark-Theme",
+        "design": "Design-Theme",
+        "contrast": "Contrast-Theme"
+    },
+    "modules": {
+        "dashboard": "Översikt",
+        "calendar": "Kalender",
+        "contacts": "Kontakter",
+        "documentation": "Dokumentation",
+        "invoices": "Fakturor",
+        "payments": "Betalningar",
+        "healthtalk": "Healthtalk",
+        "healthshop": "Healthshop",
+        "appointments": "Möten",
+        "documents": "Dokument"
+    },
+    "buttons": {
+        "new": "Ny",
+        "add": "Lägg till post",
+        "addWidget": "Lägg till widget",
+        "more": "Mer"
+    },
+    "search": {
+        "actionOrCommand": "Utför åtgärd eller kommando...",
+        "search": "Sök...",
+        "action": "Utför åtgärd...",
+        "clear": "Rensa sökning"
+    },
+    "dashboard": {
+        "title": "Instrumentpanel",
+        "content": "Instrumentpanelens innehåll kommer att implementeras i senare steg.",
+        "createNewEntry": "Skapa ny post",
+        "addWidgetDialog": "Lägg till widget - Dialog kommer att implementeras här",
+        "createEntryDialog": "Skapa ny post - Dialog kommer att implementeras här"
+    }
+}
